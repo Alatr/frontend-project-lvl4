@@ -87,8 +87,8 @@
     "lint-staged": {
         "*.(js|jsx)": [
             "npx prettier-eslint --write",
-            "git add",
-            "npx eslint"
+            "make lint",
+            "git add"
         ]
     },
     "husky": {
