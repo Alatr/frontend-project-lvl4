@@ -1,4 +1,5 @@
-install: install-deps
+install:
+	npm install
 
 start:
 	heroku local -f Procfile.dev
@@ -25,9 +26,7 @@ deploy:
 	git push heroku
 
 test:
-	npm test -s
-
-.PHONY: test
+	npm test
 	
 test-coverage:
 	npm test -- --coverage --coverageProvider=v8
