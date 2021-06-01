@@ -25,3 +25,6 @@ $ make install
 $ make start
 # open http://localhost:5000
 ```
+## Heroku Open App
+
+[Open App](https://frontend-project-slack-chat.herokuapp.com/)

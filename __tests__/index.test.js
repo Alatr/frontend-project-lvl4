@@ -1,9 +1,11 @@
-import buildApp from '../server/index.js';
+// import fs from 'fs';
+// import path from 'path';
+// import { screen, waitFor } from '@testing-library/dom';
+// import userEvent from '@testing-library/user-event';
+// import nock from 'nock';
 
-test('get /', async () => {
-  const app = buildApp({ port: 5000 });
-  const response = await app.inject({
-    url: '/',
+describe('app', () => {
+  test('testing test', () => {
+    expect(1).toEqual(1);
   });
-  expect(response.statusCode).toEqual(200);
 });
