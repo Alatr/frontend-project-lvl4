@@ -4,10 +4,10 @@
 // import userEvent from '@testing-library/user-event';
 // import nock from 'nock';
 
-import app from '../src/app.js';
+// import app from '../src/app.js';
 
-describe('app', () => {
-  test('testing test', () => {
-    expect(app()).toEqual(7);
-  });
-});
+// describe('app', () => {
+//   test('testing test', () => {
+//     expect(app()).toEqual(7);
+//   });
+// });
