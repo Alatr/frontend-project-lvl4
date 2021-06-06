@@ -17,7 +17,10 @@ build:
 	npm run build
 
 lint:
-	npx eslint .
+	npx eslint . --ext js,jsx
+
+lint-fix:
+	npx eslint . --ext js,jsx --fix
 
 publish:
 	npm publish

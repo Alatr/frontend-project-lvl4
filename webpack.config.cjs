@@ -9,6 +9,9 @@ module.exports = {
   mode,
   resolve: {
     extensions: ['.js', '.jsx'],
+    alias: {
+      '@assets': path.resolve(__dirname, './assets'),
+    },
   },
   output: {
     path: path.join(__dirname, 'dist', 'public'),
@@ -21,15 +24,23 @@ module.exports = {
     publicPath: '/assets/',
     historyApiFallback: true,
   },
-  plugins: [
-    new MiniCssExtractPlugin(),
-  ],
+  plugins: [new MiniCssExtractPlugin()],
+
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: 'babel-loader',
+      },
+
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]',
+          publicPath: 'http://localhost:8080/',
+        },
       },
       {
         test: /\.s[ac]ss$/i,

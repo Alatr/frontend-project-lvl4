@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import '../assets/application.scss';
+import 'regenerator-runtime/runtime.js';
+import '@assets/styles/application.scss';
+
 import {
-  BrowserRouter as Router, Switch, Route, Redirect, Link,
+  BrowserRouter as Router, Switch, Route, Redirect,
 } from 'react-router-dom';
 
 import routes from './routes-config.js';
@@ -10,7 +12,7 @@ import useAuth from './hooks/index.js';
 
 const App = () => {
   const AuthProvider = ({ children }) => {
-    const [loggedIn, setLoggedIn] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(false);
 
     const logIn = () => setLoggedIn(true);
     const logOut = () => {
@@ -23,15 +25,13 @@ const App = () => {
     );
   };
 
-  const PrivateRoute = ({ children, path, component }) => {
+  const PrivateRoute = ({ path, component }) => {
     const auth = useAuth();
-
     return (
       <Route
         path={path}
-        component={component}
         render={({ location }) => (auth.loggedIn ? (
-          children
+          component
         ) : (
           <Redirect to={{ pathname: routes.loginPage.path, state: { from: location } }} />
         ))}
