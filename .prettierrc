@@ -9,5 +9,9 @@
   "arrowParens": "avoid",
   "jsxBrackets": true,
   "jsxSingleQuote": true,
-  "jsxBracketSameLine": true
+  "jsxBracketSameLine": true,
+  "extends": [
+    ".eslintrc.yml",
+    "prettier"
+  ]
 }
