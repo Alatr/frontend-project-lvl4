@@ -25,16 +25,14 @@ const Login = () => {
       password: '',
     },
     validationSchema: Yup.object({
-      username: Yup.string().required('Required'),
-      password: Yup.string().required('Required'),
+      username: Yup.string().required(),
+      password: Yup.string().required(),
     }),
     onSubmit: async (values) => {
       try {
-        const {
-          data: { token },
-        } = await axios.post(api.login(), values);
+        const { data } = await axios.post(api.login(), values);
 
-        localStorage.setItem('userId', JSON.stringify(token));
+        localStorage.setItem('userId', JSON.stringify(data));
         auth.logIn();
         const { from } = location.state || { from: { pathname: '/' } };
         history.replace(from);
@@ -72,6 +70,7 @@ const Login = () => {
                       value={formik.values.username}
                       isInvalid={authFailed}
                       ref={inputRef}
+                      disabled={formik.isSubmitting}
                     />
                     <Form.Label htmlFor="floatingUsername">Ваш ник</Form.Label>
                   </Form.Group>
@@ -86,6 +85,7 @@ const Login = () => {
                       onChange={formik.handleChange}
                       value={formik.values.password}
                       isInvalid={authFailed}
+                      disabled={formik.isSubmitting}
                     />
                     <Form.Label htmlFor="floatingPassword">Пароль</Form.Label>
                     <Form.Control.Feedback type="invalid">
@@ -93,7 +93,7 @@ const Login = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </div>
-                <Button type="submit" variant="primary" block>
+                <Button type="submit" variant="primary" disabled={formik.isSubmitting} block>
                   Войти
                 </Button>
               </Form>
