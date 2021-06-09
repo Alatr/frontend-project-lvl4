@@ -6,40 +6,45 @@ import {
   BrowserRouter as Router, Switch, Route, Redirect,
 } from 'react-router-dom';
 
+import { Provider } from 'react-redux';
 import routes from './routes-config.js';
 import authContext from './contexts/index.js';
 import useAuth from './hooks/index.js';
 
-const App = () => {
-  const AuthProvider = ({ children }) => {
-    const [loggedIn, setLoggedIn] = useState(true);
+import configureStore from './configure-store.js';
 
-    const logIn = () => setLoggedIn(true);
-    const logOut = () => {
-      localStorage.removeItem('userId');
-      setLoggedIn(false);
-    };
+const store = configureStore();
 
-    return (
-      <authContext.Provider value={{ loggedIn, logIn, logOut }}>{children}</authContext.Provider>
-    );
-  };
+const AuthProvider = ({ children }) => {
+  const [loggedIn, setLoggedIn] = useState(true);
 
-  const PrivateRoute = ({ path, component: Component }) => {
-    const auth = useAuth();
-    return (
-      <Route
-        path={path}
-        render={({ location }) => (auth.loggedIn ? (
-          <Component />
-        ) : (
-          <Redirect to={{ pathname: routes.loginPage.path, state: { from: location } }} />
-        ))}
-      />
-    );
+  const logIn = () => setLoggedIn(true);
+  const logOut = () => {
+    localStorage.removeItem('userId');
+    setLoggedIn(false);
   };
 
   return (
+    <authContext.Provider value={{ loggedIn, logIn, logOut }}>{children}</authContext.Provider>
+  );
+};
+
+const PrivateRoute = ({ path, component: Component }) => {
+  const auth = useAuth();
+  return (
+    <Route
+      path={path}
+      render={({ location }) => (auth.loggedIn ? (
+        <Component />
+      ) : (
+        <Redirect to={{ pathname: routes.loginPage.path, state: { from: location } }} />
+      ))}
+    />
+  );
+};
+
+const App = () => (
+  <Provider store={store}>
     <AuthProvider>
       <Router>
         <div className="d-flex flex-column h-100">
@@ -58,7 +63,7 @@ const App = () => {
         </div>
       </Router>
     </AuthProvider>
-  );
-};
+  </Provider>
+);
 
 export default App;
