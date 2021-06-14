@@ -1,12 +1,66 @@
-// @ts-check
+// // @ts-check
+
+// const path = require('path');
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+// const mode = process.env.NODE_ENV || 'development';
+
+// module.exports = {
+//   mode,
+//   resolve: {
+//     extensions: ['.js', '.jsx'],
+//     alias: {
+//       '@assets': path.resolve(__dirname, './assets'),
+//     },
+//   },
+//   output: {
+//     path: path.join(__dirname, 'dist', 'public'),
+//     publicPath: '/assets/',
+//   },
+//   devServer: {
+//     compress: true,
+//     port: 8080,
+//     host: '0.0.0.0',
+//     publicPath: '/assets/',
+//     historyApiFallback: true,
+//   },
+//   plugins: [new MiniCssExtractPlugin()],
+
+//   module: {
+//     rules: [
+//       {
+//         test: /\.jsx?$/,
+//         exclude: /node_modules/,
+//         use: 'babel-loader',
+//       },
+
+//       {
+//         test: /\.(png|jpe?g|gif)$/i,
+//         loader: 'file-loader',
+//         options: {
+//           name: '[name].[ext]',
+//           // publicPath: 'http://localhost:8080/',
+//         },
+//       },
+//       {
+//         test: /\.s[ac]ss$/i,
+//         use: [
+//           { loader: MiniCssExtractPlugin.loader },
+//           { loader: 'css-loader' },
+//           { loader: 'postcss-loader' },
+//           { loader: 'sass-loader' },
+//         ],
+//       },
+//     ],
+//   },
+// };
 
 const path = require('path');
+
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const mode = process.env.NODE_ENV || 'development';
-
 module.exports = {
-  mode,
+  mode: process.env.NODE_ENV || 'development',
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
@@ -17,6 +71,7 @@ module.exports = {
     path: path.join(__dirname, 'dist', 'public'),
     publicPath: '/assets/',
   },
+  plugins: [new MiniCssExtractPlugin()],
   devServer: {
     compress: true,
     port: 8080,
@@ -24,23 +79,20 @@ module.exports = {
     publicPath: '/assets/',
     historyApiFallback: true,
   },
-  plugins: [new MiniCssExtractPlugin()],
-
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: 'babel-loader',
-      },
-
-      {
-        test: /\.(png|jpe?g|gif)$/i,
-        loader: 'file-loader',
-        options: {
-          name: '[path][name].[ext]',
-          publicPath: 'http://localhost:8080/',
-        },
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+              presets: ['@babel/env', '@babel/react'],
+            },
+          },
+        ],
       },
       {
         test: /\.s[ac]ss$/i,
@@ -50,6 +102,12 @@ module.exports = {
           { loader: 'postcss-loader' },
           { loader: 'sass-loader' },
         ],
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: {
+          loader: 'url-loader',
+        },
       },
     ],
   },

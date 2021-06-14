@@ -1,47 +1,50 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import routesApi from '../routes-api';
+import { Spinner } from 'react-bootstrap';
 import useAuth from '../hooks/index.js';
-import * as actions from '../actions/index.js';
+import * as actions from '../slices/channels.js';
 
-const getAuthHeader = () => {
-  const userId = JSON.parse(localStorage.getItem('userId'));
-  return userId && userId.token ? { Authorization: `Bearer ${userId.token}` } : {};
-};
+import ChannelsList from './ChannelsList';
+import MessagesList from './MessagesList';
 
 const actionsCreators = {
-  addTodo: actions.addTodo,
+  fetchInit: actions.fetchInit,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({ channels, messages }) => {
   const props = {
-    tasks: state.todosReducer,
+    channels: channels.allIds.map((id) => channels.byId[id]),
+    loadingChannelsStatus: channels.loading,
+    currentChannelId: channels.currentChannelId,
+    messages: messages.allIds.map((id) => messages.byId[id]),
   };
   return props;
 };
 
-const Home = ({ addTodo, tasks }) => {
+const Home = ({
+  currentChannelId, loadingChannelsStatus, fetchInit, channels, messages,
+}) => {
   const auth = useAuth();
-  const [userInfo, setUserInfo] = useState(null);
-  const fetchAccess = async () => {
-    try {
-      const { data } = await axios.get(routesApi.usersPath(), { headers: getAuthHeader() });
-      setUserInfo(data);
-      auth.logIn();
-      // TODO: init redux store from API
-    } catch (error) {
-      auth.logOut();
-      console.error(error.response);
-    }
-  };
-  console.log('====================================');
-  console.log(userInfo, tasks);
-  console.log('====================================');
 
   useEffect(() => {
-    fetchAccess();
+    fetchInit();
   }, []);
+
+  if (loadingChannelsStatus === 'rejected') {
+    auth.logOut();
+  }
+  if (loadingChannelsStatus === 'fulfilled') {
+    auth.logIn();
+  }
+  if (loadingChannelsStatus === 'idle') {
+    return (
+      <div className="container flex-grow-1 my-4 overflow-hidden rounded shadow">
+        <div className="d-flex justify-content-center align-items-center h-100">
+          <Spinner animation="border" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container flex-grow-1 my-4 overflow-hidden rounded shadow">
@@ -63,20 +66,7 @@ const Home = ({ addTodo, tasks }) => {
               <span className="visually-hidden">+</span>
             </button>
           </div>
-          <ul className="nav flex-column nav-pills nav-fill">
-            <li className="nav-item">
-              <button type="button" className="w-100 px-4 rounded-0 text-start btn btn-secondary">
-                <span className="me-3">#</span>
-                general
-              </button>
-            </li>
-            <li className="nav-item">
-              <button type="button" className="w-100 px-4 rounded-0 text-start btn">
-                <span className="me-3">#</span>
-                random
-              </button>
-            </li>
-          </ul>
+          <ChannelsList channels={channels} currentChannelId={currentChannelId} />
         </div>
         <div className="col p-0 h-100">
           <div className="d-flex flex-column h-100">
@@ -86,22 +76,12 @@ const Home = ({ addTodo, tasks }) => {
               </p>
               <span className="text-muted">19 сообщений</span>
             </div>
-            <div id="messages-box" className="chat-messages overflow-auto px-5 ">
-              <div className="text-break mb-2">
-                <b>Maxim</b>
-                : wedwed
-              </div>
-              <div className="text-break mb-2">
-                <b>Maxim</b>
-                : wdad
-              </div>
-            </div>
+            <MessagesList messages={messages} />
             <div className="border-top mt-auto py-3 px-5">
               <form
                 noValidate
                 onSubmit={(e) => {
                   e.preventDefault();
-                  addTodo({ text: 'Submit!!!!!!!!!!!!!!!!!!!!' });
                 }}
               >
                 <div className="input-group">
