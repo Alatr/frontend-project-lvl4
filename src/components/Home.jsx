@@ -1,14 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { Spinner } from 'react-bootstrap';
+import { io } from 'socket.io-client';
 import useAuth from '../hooks/index.js';
-import * as actions from '../slices/channels.js';
+import { fetchInit } from '../api.js';
 
 import ChannelsList from './ChannelsList';
 import MessagesList from './MessagesList';
-
+// TODO thinking about name fetchInitAction and check warning in webpack console
 const actionsCreators = {
-  fetchInit: actions.fetchInit,
+  fetchInitAction: fetchInit,
 };
 
 const mapStateToProps = ({ channels, messages }) => {
@@ -22,12 +23,22 @@ const mapStateToProps = ({ channels, messages }) => {
 };
 
 const Home = ({
-  currentChannelId, loadingChannelsStatus, fetchInit, channels, messages,
+  currentChannelId, loadingChannelsStatus, fetchInitAction, channels, messages,
 }) => {
   const auth = useAuth();
+  const socket = useRef();
+  const [socketConnected, setSocketConnected] = useState(false);
+
+  function connectSocket() {
+    socket.current = io();
+    socket.current.on('connect', () => {
+      setSocketConnected(true);
+    });
+  }
 
   useEffect(() => {
-    fetchInit();
+    fetchInitAction();
+    connectSocket();
   }, []);
 
   if (loadingChannelsStatus === 'rejected') {
@@ -36,7 +47,7 @@ const Home = ({
   if (loadingChannelsStatus === 'fulfilled') {
     auth.logIn();
   }
-  if (loadingChannelsStatus === 'idle') {
+  if (loadingChannelsStatus === 'idle' || !socketConnected) {
     return (
       <div className="container flex-grow-1 my-4 overflow-hidden rounded shadow">
         <div className="d-flex justify-content-center align-items-center h-100">
@@ -76,42 +87,11 @@ const Home = ({
               </p>
               <span className="text-muted">19 сообщений</span>
             </div>
-            <MessagesList messages={messages} />
-            <div className="border-top mt-auto py-3 px-5">
-              <form
-                noValidate
-                onSubmit={(e) => {
-                  e.preventDefault();
-                }}
-              >
-                <div className="input-group">
-                  <input
-                    name="body"
-                    data-testid="new-message"
-                    placeholder="Введите сообщение..."
-                    className="border-0 form-control"
-                    defaultValue
-                  />
-                  <div className="input-group-append">
-                    <button type="submit" className="btn btn-group-vertical">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        width={30}
-                        height={30}
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"
-                        />
-                      </svg>
-                      <span className="visually-hidden">Отправить</span>
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
+            <MessagesList
+              messages={messages}
+              socket={socket.current}
+              currentChannelId={currentChannelId}
+            />
           </div>
         </div>
       </div>

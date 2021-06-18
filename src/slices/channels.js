@@ -1,17 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
-import routesApi from '../routes-api.js';
-
-const getAuthHeader = () => {
-  const userId = JSON.parse(localStorage.getItem('userId'));
-  return userId && userId.token ? { Authorization: `Bearer ${userId.token}` } : {};
-};
-
-export const fetchInit = createAsyncThunk('channels/fetchInit', async () => {
-  const { data } = await axios.get(routesApi.usersPath(), { headers: getAuthHeader() });
-  return data;
-});
+import { fetchInit } from '../api.js';
 
 const channelsSlice = createSlice({
   name: 'channels',

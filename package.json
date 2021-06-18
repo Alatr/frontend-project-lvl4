@@ -36,6 +36,7 @@
     "@reduxjs/toolkit": "^1.6.0",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.0-alpha1",
+    "classnames": "^2.3.1",
     "core-js": "^3.12.1",
     "debug": "^4.3.1",
     "fastify": "^3.15.1",
@@ -47,6 +48,7 @@
     "fastify-static": "^4.0.1",
     "formik": "^2.2.9",
     "http-errors": "^1.8.0",
+    "i18next": "^20.3.1",
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "pino-pretty": "^4.8.0",
@@ -60,8 +62,8 @@
     "react-router-dom": "^5.2.0",
     "redux-devtools-extension": "^2.13.9",
     "regenerator-runtime": "^0.13.7",
-    "yup": "^0.32.9",
-    "classnames": "^2.3.1"
+    "socket.io-client": "^4.1.2",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/cli": "^7.13.16",
