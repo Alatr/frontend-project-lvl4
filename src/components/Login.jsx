@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { useLocation, useHistory } from 'react-router-dom';
 import imgLogin from '@assets/images/login.jpg';
 import api from '../routes-api.js';
-import useAuth from '../hooks/index.js';
+import { useAuth } from '../hooks/index.js';
 
 const Login = () => {
   const auth = useAuth();
@@ -31,7 +31,6 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         const { data } = await axios.post(api.login(), values);
-
         localStorage.setItem('userId', JSON.stringify(data));
         auth.logIn();
         const { from } = location.state || { from: { pathname: '/' } };

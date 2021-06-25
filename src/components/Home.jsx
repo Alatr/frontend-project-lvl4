@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Spinner } from 'react-bootstrap';
-import { io } from 'socket.io-client';
-import useAuth from '../hooks/index.js';
-import { fetchInit } from '../api.js';
+import { useAuth, useSocket } from '../hooks/index.js';
+import initFetch from '../actions/init-fetch.js';
+import { addMessage } from '../slices/messages.js';
 
 import ChannelsList from './ChannelsList';
 import MessagesList from './MessagesList';
 // TODO thinking about name fetchInitAction and check warning in webpack console
 const actionsCreators = {
-  fetchInitAction: fetchInit,
+  initFetch,
+  addMessage,
 };
 
 const mapStateToProps = ({ channels, messages }) => {
@@ -18,27 +19,29 @@ const mapStateToProps = ({ channels, messages }) => {
     loadingChannelsStatus: channels.loading,
     currentChannelId: channels.currentChannelId,
     messages: messages.allIds.map((id) => messages.byId[id]),
+    messagesQuantity: messages.allIds.length,
+    currentChannelName: channels.byId[channels.currentChannelId]?.name,
   };
   return props;
 };
 
+// TODO think about separete component with separate redux
+
 const Home = ({
-  currentChannelId, loadingChannelsStatus, fetchInitAction, channels, messages,
+  addMessage: addMessageAction,
+  initFetch: initFetchAction,
+  currentChannelId,
+  loadingChannelsStatus,
+  channels,
+  messages,
+  messagesQuantity,
+  currentChannelName,
 }) => {
   const auth = useAuth();
-  const socket = useRef();
-  const [socketConnected, setSocketConnected] = useState(false);
-
-  function connectSocket() {
-    socket.current = io();
-    socket.current.on('connect', () => {
-      setSocketConnected(true);
-    });
-  }
+  const { socketConnected } = useSocket();
 
   useEffect(() => {
-    fetchInitAction();
-    connectSocket();
+    initFetchAction();
   }, []);
 
   if (loadingChannelsStatus === 'rejected') {
@@ -83,13 +86,20 @@ const Home = ({
           <div className="d-flex flex-column h-100">
             <div className="bg-light mb-4 p-3 shadow-sm small">
               <p className="m-0">
-                <b># general</b>
+                <b>
+                  #
+                  {currentChannelName}
+                </b>
               </p>
-              <span className="text-muted">19 сообщений</span>
+              <span className="text-muted">
+                {messagesQuantity}
+                {' '}
+                сообщений
+              </span>
             </div>
             <MessagesList
+              addMessage={addMessageAction}
               messages={messages}
-              socket={socket.current}
               currentChannelId={currentChannelId}
             />
           </div>
