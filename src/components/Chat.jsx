@@ -1,18 +1,40 @@
 import React, { useEffect, useRef } from 'react';
+import { connect } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import { useSocket } from '../hooks/index.js';
 
-const MessagesList = ({ messages, currentChannelId, addMessage }) => {
+import { addMessage } from '../slices/messages.js';
+import {
+  getMessagesByCurrentChannelId,
+  getCurrentChannelId,
+  getCurrentChannelName,
+} from '../selectors/index.js';
+
+const actionsCreators = {
+  addMessageAction: addMessage,
+};
+
+const mapStateToProps = (state) => {
+  const props = {
+    messages: getMessagesByCurrentChannelId(state),
+    currentChannelId: getCurrentChannelId(state),
+    currentChannelName: getCurrentChannelName(state),
+  };
+  return props;
+};
+
+const Chat = ({
+  messages, currentChannelId, addMessageAction, currentChannelName,
+}) => {
   const { socket } = useSocket();
   const inputRef = useRef();
   const user = JSON.parse(localStorage.getItem('userId'))?.username;
-
   useEffect(() => {
     inputRef.current.focus();
     socket.on('newMessage', (data) => {
-      addMessage(data);
+      addMessageAction(data);
     });
   }, []);
 
@@ -20,6 +42,19 @@ const MessagesList = ({ messages, currentChannelId, addMessage }) => {
   // TODO question about bootsrtap validation
   return (
     <>
+      <div className="bg-light mb-4 p-3 shadow-sm small">
+        <p className="m-0">
+          <b>
+            #
+            {currentChannelName}
+          </b>
+        </p>
+        <span className="text-muted">
+          {messages.length}
+          {' '}
+          сообщений
+        </span>
+      </div>
       <div id="messages-box" className="chat-messages overflow-auto px-5 ">
         {messages.map(({ username, body, id }) => (
           <div className="text-break mb-2" key={id}>
@@ -36,14 +71,19 @@ const MessagesList = ({ messages, currentChannelId, addMessage }) => {
             body: Yup.string().required(),
           })}
           onSubmit={(values, { resetForm }) => {
-            socket.emit('newMessage', {
-              body: values.body,
-              channelId: currentChannelId,
-              id: _.uniqueId(),
-              username: user,
-            });
-            resetForm();
-            inputRef.current.select();
+            socket.emit(
+              'newMessage',
+              {
+                body: values.body,
+                channelId: currentChannelId,
+                id: _.uniqueId(),
+                username: user,
+              },
+              () => {
+                resetForm();
+                inputRef.current.select();
+              },
+            );
           }}
         >
           {({ isValid, dirty }) => (
@@ -93,4 +133,4 @@ const MessagesList = ({ messages, currentChannelId, addMessage }) => {
   );
 };
 
-export default MessagesList;
+export default connect(mapStateToProps, actionsCreators)(Chat);

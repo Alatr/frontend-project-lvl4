@@ -8,7 +8,6 @@ const getAuthHeader = () => {
 };
 
 export default createAsyncThunk('channels/initFetch', async () => {
-  // TODO check empty header and XHR
   const { data } = await axios.get(routesApi.usersPath(), { headers: getAuthHeader() });
   return data;
 });
