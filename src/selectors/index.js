@@ -21,6 +21,8 @@ export const getCurrentChannelName = createSelector(
   getCurrentChannelId,
   (channels, currentChannelId) => channels[currentChannelId]?.name,
 );
+/* eslint-disable-next-line max-len */
+export const getChannelsNames = createSelector(getChannels, (channels) => channels.map(({ name }) => name));
 
 // messages
 const getMessagesState = (state) => state?.messages;
@@ -39,4 +41,9 @@ export const getMessagesByCurrentChannelId = createSelector(
   getCurrentChannelId,
   /* eslint-disable-next-line max-len */
   (messages, currentChannelId) => messages.filter(({ channelId }) => channelId === currentChannelId),
+);
+
+export const getMessagesCount = createSelector(
+  getMessagesByCurrentChannelId,
+  (messagesByCurrentChannelId) => messagesByCurrentChannelId.length,
 );

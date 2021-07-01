@@ -14,8 +14,6 @@ export const fetchInit = createAsyncThunk('channels/fetchInit', async () => {
   return data;
 });
 
-export const aaa = { a: 123 };
-
 export const reducers = combineReducers({
   channels: channelsReducer,
   messages: messagesReducer,

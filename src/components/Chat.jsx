@@ -1,24 +1,23 @@
 import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import _ from 'lodash';
-import { useSocket } from '../hooks/index.js';
+import { useSocket } from '@hooks/index.js';
+import * as yup from 'yup';
 
-import { addMessage } from '../slices/messages.js';
+import { useTranslation } from 'react-i18next';
+
 import {
   getMessagesByCurrentChannelId,
   getCurrentChannelId,
   getCurrentChannelName,
-} from '../selectors/index.js';
-
-const actionsCreators = {
-  addMessageAction: addMessage,
-};
+  getMessagesCount,
+} from '@selectors/index.js';
 
 const mapStateToProps = (state) => {
   const props = {
     messages: getMessagesByCurrentChannelId(state),
+    messagesCount: getMessagesCount(state),
     currentChannelId: getCurrentChannelId(state),
     currentChannelName: getCurrentChannelName(state),
   };
@@ -26,20 +25,19 @@ const mapStateToProps = (state) => {
 };
 
 const Chat = ({
-  messages, currentChannelId, addMessageAction, currentChannelName,
+  messages, messagesCount, currentChannelId, currentChannelName,
 }) => {
   const { socket } = useSocket();
   const inputRef = useRef();
+  const { t } = useTranslation();
+
   const user = JSON.parse(localStorage.getItem('userId'))?.username;
   useEffect(() => {
     inputRef.current.focus();
-    socket.on('newMessage', (data) => {
-      addMessageAction(data);
-    });
   }, []);
-
   // TODO check useFormik hook feature
   // TODO question about bootsrtap validation
+  console.log({ count: messagesCount, currentChannelId });
   return (
     <>
       <div className="bg-light mb-4 p-3 shadow-sm small">
@@ -49,11 +47,7 @@ const Chat = ({
             {currentChannelName}
           </b>
         </p>
-        <span className="text-muted">
-          {messages.length}
-          {' '}
-          сообщений
-        </span>
+        <span className="text-muted">{t('chat.messagesCount', { count: messagesCount })}</span>
       </div>
       <div id="messages-box" className="chat-messages overflow-auto px-5 ">
         {messages.map(({ username, body, id }) => (
@@ -67,8 +61,8 @@ const Chat = ({
       <div className="border-top mt-auto py-3 px-5">
         <Formik
           initialValues={{ body: '' }}
-          validationSchema={Yup.object({
-            body: Yup.string().required(),
+          validationSchema={yup.object({
+            body: yup.string().required(),
           })}
           onSubmit={(values, { resetForm }) => {
             socket.emit(
@@ -94,7 +88,7 @@ const Chat = ({
                     <input
                       type="text"
                       data-testid="new-message"
-                      placeholder="Введите сообщение..."
+                      placeholder={t('chat.chatPlaceholder')}
                       className="border-0 form-control"
                       ref={inputRef}
                       disabled={isSubmitting}
@@ -133,4 +127,4 @@ const Chat = ({
   );
 };
 
-export default connect(mapStateToProps, actionsCreators)(Chat);
+export default connect(mapStateToProps, null)(Chat);

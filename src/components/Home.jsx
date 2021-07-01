@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Spinner } from 'react-bootstrap';
-import { useAuth, useSocket } from '../hooks/index.js';
+import { useAuth, useSocket } from '@hooks/index.js';
 import initFetch from '../actions/init-fetch.js';
 
 import Channels from './Channels';

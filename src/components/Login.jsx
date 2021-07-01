@@ -2,11 +2,11 @@ import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { Form, Button } from 'react-bootstrap';
-import * as Yup from 'yup';
 import { useLocation, useHistory } from 'react-router-dom';
-import imgLogin from '@assets/images/login.jpg';
+import imgLogin from '@assets/static/images/login.jpg';
+import { useAuth } from '@hooks/index.js';
+import * as yup from 'yup';
 import api from '../routes-api.js';
-import { useAuth } from '../hooks/index.js';
 
 const Login = () => {
   const auth = useAuth();
@@ -24,9 +24,9 @@ const Login = () => {
       username: '',
       password: '',
     },
-    validationSchema: Yup.object({
-      username: Yup.string().required(),
-      password: Yup.string().required(),
+    validationSchema: yup.object({
+      username: yup.string().required(),
+      password: yup.string().required(),
     }),
     onSubmit: async (values) => {
       try {

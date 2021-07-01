@@ -10,14 +10,21 @@ const channelsSlice = createSlice({
     changeCurrentChannelId(state, { payload: { id } }) {
       state.currentChannelId = id;
     },
-    addChannel(state, { payload: { id } }) {
-      state.currentChannelId = id;
+    addChannel(state, { payload }) {
+      state.byId[payload.id] = payload;
+      state.allIds.push(payload.id);
+      // TODO check add active
+      // state.currentChannelId = payload.id;
     },
-    removeChannel(state, { payload: { id } }) {
-      state.currentChannelId = id;
+    removeChannel(state, { payload: { channelId } }) {
+      return {
+        ...state,
+        byId: _.omit(state.byId, channelId),
+        allIds: state.allIds.filter((id) => id !== channelId),
+      };
     },
-    renameChannel(state, { payload: { id } }) {
-      state.currentChannelId = id;
+    renameChannel(state, { payload: { id, name } }) {
+      state.byId[id].name = name;
     },
     /* eslint-enable no-param-reassign */
   },

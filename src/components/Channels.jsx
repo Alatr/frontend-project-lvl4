@@ -1,22 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
+import { Dropdown, Button, ButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
-
 import classNames from 'classnames';
-import {
-  changeCurrentChannelId,
-  addChannel,
-  removeChannel,
-  renameChannel,
-} from '../slices/channels.js';
-import { getChannels, getCurrentChannelId } from '../selectors/index.js';
-import getModal from './modals/index.js';
+import { useTranslation } from 'react-i18next';
 
-const actionsCreators = {
-  changeCurrentChannelIdAction: changeCurrentChannelId,
-  addChannelAction: addChannel,
-  removeChannelAction: removeChannel,
-  renameChannelAction: renameChannel,
-};
+import { changeCurrentChannelId } from '@slices/channels.js';
+
+import { getChannels, getCurrentChannelId } from '@selectors/index.js';
+import getModal from './modals/index.js';
 
 const mapStateToProps = (state) => {
   const props = {
@@ -26,48 +17,81 @@ const mapStateToProps = (state) => {
   return props;
 };
 
-const renderModal = ({ modalInfo, hideModal, setChannels }) => {
+const actionsCreators = {
+  changeCurrentChannelIdAction: changeCurrentChannelId,
+};
+
+const renderModal = ({ modalInfo, hideModal }) => {
   if (modalInfo.type === null) {
     return null;
   }
-
   const Modal = getModal(modalInfo.type);
-
-  return <Modal onHide={hideModal} setChannels={setChannels} />;
+  return <Modal onHide={hideModal} modalInfo={modalInfo} />;
 };
 
-const Channels = ({
-  channels,
+const getSelectedButtonVariant = (id, selectedId) => (id === selectedId ? 'secondary' : 'light');
+
+const ChannelItem = ({
+  removable,
+  id: channelId,
   currentChannelId,
-  changeCurrentChannelIdAction,
-  addChannelAction,
-  removeChannelAction,
-  renameChannelAction,
+  showModal,
+  name,
+  changeChannelHandle,
 }) => {
-  const [modalInfo, setModalInfo] = useState({ type: null, channel: null });
-  const hideModal = () => setModalInfo({ type: null, channel: null });
-  const showModal = (type, channel = null) => setModalInfo({ type, channel });
+  const { t } = useTranslation();
+  return (
+    <>
+      {removable ? (
+        <Dropdown onClick={changeChannelHandle(channelId)}>
+          <ButtonGroup variant="success" className="w-100">
+            <Button variant={getSelectedButtonVariant(channelId, currentChannelId)} block>
+              {name}
+            </Button>
+            <Dropdown.Toggle
+              variant={getSelectedButtonVariant(channelId, currentChannelId)}
+              split
+              id="dropdown-custom-2"
+            />
+          </ButtonGroup>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => showModal('removing', channelId)}>
+              {t('channel.remove')}
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => showModal('renaming', channelId)}>
+              {t('channel.rename')}
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      ) : (
+        <Button
+          type="button"
+          onClick={changeChannelHandle(channelId)}
+          variant={getSelectedButtonVariant(channelId, currentChannelId)}
+          className={classNames('w-100', 'px-4', 'rounded-0', 'text-start', 'btn')}
+        >
+          <span className="me-3">#</span>
+          {name}
+        </Button>
+      )}
+    </>
+  );
+};
+
+const Channels = ({ channels, currentChannelId, changeCurrentChannelIdAction }) => {
+  const { t } = useTranslation();
+  const [modalInfo, setModalInfo] = useState({ type: null, channelId: null });
+  const hideModal = () => setModalInfo({ type: null, channelId: null });
+  const showModal = (type, channelId = null) => setModalInfo({ type, channelId });
 
   const changeChannelHandle = (id) => () => {
     changeCurrentChannelIdAction({ id });
   };
 
-  const mapAction = useCallback(
-    (modalName) => {
-      const modalsActions = {
-        adding: addChannelAction,
-        removing: removeChannelAction,
-        renaming: renameChannelAction,
-      };
-      return modalsActions[modalName];
-    },
-    [addChannelAction, removeChannelAction, renameChannelAction],
-  );
-
   return (
     <>
       <div className="d-flex justify-content-between mb-2 px-4">
-        <span>Каналы</span>
+        <span>{t('channel.title')}</span>
         <button
           type="button"
           className="p-0 text-primary btn btn-group-vertical"
@@ -87,22 +111,19 @@ const Channels = ({
         </button>
       </div>
       <ul className="nav flex-column nav-pills nav-fill">
-        {channels.map(({ name, id }) => (
-          <li className="nav-item" key={id}>
-            <button
-              type="button"
-              onClick={changeChannelHandle(id)}
-              className={classNames('w-100', 'px-4', 'rounded-0', 'text-start', 'btn', {
-                'btn-secondary': id === currentChannelId,
-              })}
-            >
-              <span className="me-3">#</span>
-              {name}
-            </button>
+        {channels.map((channelData) => (
+          <li className="nav-item" key={channelData.id}>
+            <ChannelItem
+              changeChannelHandle={changeChannelHandle}
+              currentChannelId={currentChannelId}
+              showModal={showModal}
+              /* eslint-disable-next-line react/jsx-props-no-spreading */
+              {...channelData}
+            />
           </li>
         ))}
       </ul>
-      {renderModal({ hideModal, modalInfo, setChannels: mapAction(modalInfo.type) })}
+      {renderModal({ hideModal, modalInfo })}
     </>
   );
 };
