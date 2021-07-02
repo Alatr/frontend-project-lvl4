@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "0.0.1",
   "description": "this project presents a simplified analogue version of slask chat",
-  "main": "src/init.js",
+  "main": "src/init.jsx",
   "type": "module",
   "engines": {
     "node": "14.x"
