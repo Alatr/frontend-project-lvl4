@@ -12,6 +12,14 @@ const messagesSlice = createSlice({
       /* eslint-disable-next-line no-param-reassign */
       state.allIds.push(payload.id);
     },
+    removeChannel(state, { payload: { channelId } }) {
+      console.log('rm channel from mesaages');
+      return {
+        ...state,
+        byId: _.omit(state.byId, channelId),
+        allIds: state.allIds.filter((id) => id !== channelId),
+      };
+    },
   },
   extraReducers: {
     [initFetch.fulfilled]: (state, { payload: { messages } }) => ({

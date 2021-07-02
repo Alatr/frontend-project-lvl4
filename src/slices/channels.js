@@ -17,6 +17,7 @@ const channelsSlice = createSlice({
       // state.currentChannelId = payload.id;
     },
     removeChannel(state, { payload: { channelId } }) {
+      console.log('rm channel from channels');
       return {
         ...state,
         byId: _.omit(state.byId, channelId),

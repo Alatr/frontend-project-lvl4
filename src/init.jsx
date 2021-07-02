@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import 'regenerator-runtime/runtime.js';
 
 import {
-  BrowserRouter as Router, Switch, Route, Redirect,
+  BrowserRouter as Router, Switch, Route, Redirect, Link,
 } from 'react-router-dom';
 
 import { Provider, useDispatch } from 'react-redux';
@@ -19,6 +19,7 @@ import configureStore from '@lib/configure-store.js';
 import i18n from '@lib/i18n.js';
 import { authContext, socketContext } from './contexts/index.js';
 import routes from './routes-config.js';
+import LogoutButton from './components/LogoutButton.jsx';
 
 const store = configureStore();
 
@@ -102,6 +103,7 @@ const App = () => (
                   <a className="navbar-brand" href="/">
                     Hexlet Chat
                   </a>
+                  <LogoutButton />
                 </div>
               </nav>
               <Switch>
@@ -111,8 +113,16 @@ const App = () => (
                   component={routes.homePage.component}
                 />
                 <Route path={routes.loginPage.path} component={routes.loginPage.component} />
+                <Route path={routes.signupPage.path} component={routes.signupPage.component} />
                 <Route path={routes.notMatchPage.path} component={routes.notMatchPage.component} />
               </Switch>
+              <div className="card-footer p-4">
+                <div className="text-center">
+                  <span>Нет аккаунта?</span>
+                  {' '}
+                  <Link to={routes.signupPage.path}>Регистрация</Link>
+                </div>
+              </div>
             </div>
           </Router>
         </InstancesI18nextProvider>

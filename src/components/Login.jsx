@@ -2,10 +2,12 @@ import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { Form, Button } from 'react-bootstrap';
+import * as yup from 'yup';
 import { useLocation, useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import imgLogin from '@assets/static/images/login.jpg';
 import { useAuth } from '@hooks/index.js';
-import * as yup from 'yup';
 import api from '../routes-api.js';
 
 const Login = () => {
@@ -13,6 +15,7 @@ const Login = () => {
   const inputRef = useRef();
   const history = useHistory();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const [authFailed, setAuthFailed] = useState(false);
   useEffect(() => {
@@ -56,7 +59,7 @@ const Login = () => {
                 <img src={imgLogin} className="rounded-circle" alt="Войти" />
               </div>
               <Form onSubmit={formik.handleSubmit} className="w-50">
-                <h1 className="text-center mb-4">Войти</h1>
+                <h1 className="text-center mb-4">{t('login.title')}</h1>
                 <div>
                   <Form.Group className="form-floating mb-3">
                     <Form.Control
@@ -71,7 +74,9 @@ const Login = () => {
                       ref={inputRef}
                       disabled={formik.isSubmitting}
                     />
-                    <Form.Label htmlFor="floatingUsername">Ваш ник</Form.Label>
+                    <Form.Label htmlFor="floatingUsername">
+                      {t('login.placeholders.name')}
+                    </Form.Label>
                   </Form.Group>
                   <Form.Group className="form-floating mb-3">
                     <Form.Control
@@ -86,23 +91,16 @@ const Login = () => {
                       isInvalid={authFailed}
                       disabled={formik.isSubmitting}
                     />
-                    <Form.Label htmlFor="floatingPassword">Пароль</Form.Label>
-                    <Form.Control.Feedback type="invalid">
-                      Неверные имя пользователя или пароль
-                    </Form.Control.Feedback>
+                    <Form.Label htmlFor="floatingPassword">
+                      {t('login.placeholders.password')}
+                    </Form.Label>
+                    <Form.Control.Feedback type="invalid">{t('errors.auth')}</Form.Control.Feedback>
                   </Form.Group>
                 </div>
                 <Button type="submit" variant="primary" disabled={formik.isSubmitting} block>
-                  Войти
+                  {t('login.loginButtonText')}
                 </Button>
               </Form>
-            </div>
-            <div className="card-footer p-4">
-              <div className="text-center">
-                <span>Нет аккаунта?</span>
-                {' '}
-                <a href="/signup">Регистрация</a>
-              </div>
             </div>
           </div>
         </div>

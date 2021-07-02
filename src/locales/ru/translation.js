@@ -3,7 +3,11 @@ export default {
     required: 'Обязательное поле',
     min: 'От 3 до 20 символов',
     max: 'От 3 до 20 символов',
+    minPassword: 'Не менее 6 символов',
     notOneOf: 'Должно быть уникальным',
+    passwordConfirmation: 'Пароли должны совпадать',
+    alreadyExist: 'Такой пользователь уже существует',
+    auth: 'Неверные имя пользователя или пароль',
   },
   modal: {
     addTitle: 'Добавить канал',
@@ -24,5 +28,28 @@ export default {
     messagesCount_2: '{{count}} сообщения',
     messagesCount: '{{count}} сообщений',
     chatPlaceholder: 'Введите сообщение...',
+  },
+  signup: {
+    title: 'Регистрация',
+    placeholders: {
+      name: 'Имя пользователя',
+      password: 'Пароль',
+      repeatPassword: 'Подтвердите пароль',
+    },
+    signupButtonText: 'Зарегистрироваться',
+  },
+  login: {
+    title: 'Войти',
+    placeholders: {
+      name: 'Ваш ник',
+      password: 'Пароль',
+    },
+    loginButtonText: 'Войти',
+  },
+  logout: {
+    logoutButtonText: 'Выйти',
+  },
+  noMatch: {
+    title: 'page not found -  error 404',
   },
 };

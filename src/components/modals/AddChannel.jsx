@@ -35,7 +35,11 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
       <Modal.Body>
         <Formik
           validationSchema={yup.object({
-            newChannelName: yup.string().required().min(3).max(20)
+            newChannelName: yup
+              .string()
+              .required()
+              .min(3, t('errors.min'))
+              .max(20, t('errors.max'))
               .notOneOf(channelNames),
           })}
           onSubmit={(values, { resetForm }) => {
