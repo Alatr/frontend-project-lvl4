@@ -1,5 +1,5 @@
 {
-  "name": "frontend-project-lvl4",
+  "name": "@hexlet/code",
   "version": "0.0.1",
   "description": "this project presents a simplified analogue version of slask chat",
   "main": "server/index.js",
