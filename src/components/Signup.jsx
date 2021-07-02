@@ -3,11 +3,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Formik } from 'formik';
 import { Form, Button } from 'react-bootstrap';
 import { useLocation, useHistory } from 'react-router-dom';
-import imgSignup from '@assets/static/images/signup.jpg';
-import { useAuth } from '@hooks/index.js';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
+import imgSignup from '@assets/static/images/signup.jpg';
+import { useAuth } from '@hooks/index.js';
 import api from '../routes-api.js';
 
 const Signup = () => {
