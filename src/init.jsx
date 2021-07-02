@@ -1,7 +1,4 @@
-import '@assets/styles/application.scss';
 import React, { useState, useEffect } from 'react';
-import 'regenerator-runtime/runtime.js';
-
 import {
   BrowserRouter as Router, Switch, Route, Redirect, Link,
 } from 'react-router-dom';
