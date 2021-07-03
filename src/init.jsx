@@ -50,7 +50,6 @@ const SocketProvider = ({ children }) => {
         dispatch(renameChannel(data));
       });
       socket.on('newMessage', (data) => {
-        console.log(data);
         dispatch(addMessage(data));
       });
       setSocketConnected(true);

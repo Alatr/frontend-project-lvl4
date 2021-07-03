@@ -24,9 +24,9 @@ export default {
     rename: 'Переименовать',
   },
   chat: {
-    messagesCount_1: '{{count}} сообщение',
-    messagesCount_2: '{{count}} сообщения',
-    messagesCount: '{{count}} сообщений',
+    messagesCount_0: '{{count}} сообщение',
+    messagesCount_1: '{{count}} сообщения',
+    messagesCount_2: '{{count}} сообщений',
     chatPlaceholder: 'Введите сообщение...',
   },
   signup: {

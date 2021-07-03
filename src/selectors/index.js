@@ -21,6 +21,12 @@ export const getCurrentChannelName = createSelector(
   getCurrentChannelId,
   (channels, currentChannelId) => channels[currentChannelId]?.name,
 );
+
+export const getDefaultChannelId = createSelector(
+  getChannelsState,
+  (channelsState) => channelsState?.defaultCurrentChannelId,
+);
+
 /* eslint-disable-next-line max-len */
 export const getChannelsNames = createSelector(getChannels, (channels) => channels.map(({ name }) => name));
 

@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import * as yup from 'yup';
 
+import { changeCurrentChannelId } from '@slices/channels.js';
 import { useSocket } from '@hooks/index.js';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +15,7 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
   const { t } = useTranslation();
   const { socket } = useSocket();
   const inputRef = useRef();
+  const dispatch = useDispatch();
 
   const channelNames = useSelector(getChannelsNames);
 
@@ -46,7 +48,8 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
             socket.emit(
               'newChannel',
               { name: values.newChannelName, removable: true, id: _.uniqueId() },
-              () => {
+              ({ data: { id } }) => {
+                dispatch(changeCurrentChannelId({ id }));
                 resetForm();
                 onHide();
               },

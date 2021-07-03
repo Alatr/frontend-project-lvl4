@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
 import { changeCurrentChannelId } from '@slices/channels.js';
-
 import { getChannels, getCurrentChannelId } from '@selectors/index.js';
 import getModal from './modals/index.js';
 
@@ -43,9 +42,13 @@ const ChannelItem = ({
   return (
     <>
       {removable ? (
-        <Dropdown onClick={changeChannelHandle(channelId)}>
+        <Dropdown>
           <ButtonGroup variant="success" className="w-100">
-            <Button variant={getSelectedButtonVariant(channelId, currentChannelId)} block>
+            <Button
+              variant={getSelectedButtonVariant(channelId, currentChannelId)}
+              onClick={changeChannelHandle(channelId)}
+              block
+            >
               {name}
             </Button>
             <Dropdown.Toggle

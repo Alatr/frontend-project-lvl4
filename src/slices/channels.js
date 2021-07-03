@@ -13,15 +13,16 @@ const channelsSlice = createSlice({
     addChannel(state, { payload }) {
       state.byId[payload.id] = payload;
       state.allIds.push(payload.id);
-      // TODO check add active
-      // state.currentChannelId = payload.id;
     },
     removeChannel(state, { payload: { channelId } }) {
-      console.log('rm channel from channels');
       return {
         ...state,
         byId: _.omit(state.byId, channelId),
         allIds: state.allIds.filter((id) => id !== channelId),
+        currentChannelId:
+          state.currentChannelId === channelId
+            ? state.defaultCurrentChannelId
+            : state.currentChannelId,
       };
     },
     renameChannel(state, { payload: { id, name } }) {
@@ -36,6 +37,7 @@ const channelsSlice = createSlice({
       allIds: channels.map((channel) => channel.id),
       loading: 'fulfilled',
       currentChannelId,
+      defaultCurrentChannelId: currentChannelId,
     }),
     [initFetch.rejected]: (state, action) => {
       state.loading = 'rejected';

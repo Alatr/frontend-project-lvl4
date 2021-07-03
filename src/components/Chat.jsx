@@ -35,9 +35,6 @@ const Chat = ({
   useEffect(() => {
     inputRef.current.focus();
   }, []);
-  // TODO check useFormik hook feature
-  // TODO question about bootsrtap validation
-  console.log({ count: messagesCount, currentChannelId });
   return (
     <>
       <div className="bg-light mb-4 p-3 shadow-sm small">
