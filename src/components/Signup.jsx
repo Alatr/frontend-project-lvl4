@@ -94,7 +94,7 @@ const Signup = () => {
                           name="password"
                           required
                           type="password"
-                          id="floatingPassword"
+                          id="password"
                           className="form-control"
                           autoComplete="current-password"
                           onChange={handleChange}
@@ -102,7 +102,7 @@ const Signup = () => {
                           isInvalid={!!errors.password || signupFailed}
                           disabled={isSubmitting}
                         />
-                        <Form.Label htmlFor="floatingPassword">
+                        <Form.Label htmlFor="password">
                           {t('signup.placeholders.password')}
                         </Form.Label>
                         <Form.Control.Feedback type="invalid">
@@ -112,6 +112,7 @@ const Signup = () => {
                       <Form.Group className="form-floating mb-3">
                         <Form.Control
                           name="passwordConfirmation"
+                          id="passwordConfirmation"
                           required
                           type="password"
                           className="form-control"
@@ -125,7 +126,8 @@ const Signup = () => {
                           {t('signup.placeholders.repeatPassword')}
                         </Form.Label>
                         <Form.Control.Feedback type="invalid">
-                          {errors.passwordConfirmation || t('errors.alreadyExist')}
+                          {signupFailed && t('errors.alreadyExist')}
+                          {!!errors.passwordConfirmation && errors.passwordConfirmation}
                         </Form.Control.Feedback>
                       </Form.Group>
                     </div>
