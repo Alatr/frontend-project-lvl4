@@ -65,7 +65,7 @@ const Login = () => {
                     <Form.Control
                       name="username"
                       required
-                      id="floatingUsername"
+                      id="username"
                       className="form-control"
                       autoComplete="username"
                       onChange={formik.handleChange}
@@ -74,26 +74,22 @@ const Login = () => {
                       ref={inputRef}
                       disabled={formik.isSubmitting}
                     />
-                    <Form.Label htmlFor="floatingUsername">
-                      {t('login.placeholders.name')}
-                    </Form.Label>
+                    <Form.Label htmlFor="username">{t('login.placeholders.name')}</Form.Label>
                   </Form.Group>
                   <Form.Group className="form-floating mb-3">
                     <Form.Control
                       name="password"
                       required
                       type="password"
-                      id="floatingPassword"
+                      id="password"
                       className="form-control"
-                      autoComplete="current-password"
+                      autoComplete="password"
                       onChange={formik.handleChange}
                       value={formik.values.password}
                       isInvalid={authFailed}
                       disabled={formik.isSubmitting}
                     />
-                    <Form.Label htmlFor="floatingPassword">
-                      {t('login.placeholders.password')}
-                    </Form.Label>
+                    <Form.Label htmlFor="password">{t('login.placeholders.password')}</Form.Label>
                     <Form.Control.Feedback type="invalid">
                       {authFailed && t('errors.auth')}
                     </Form.Control.Feedback>
