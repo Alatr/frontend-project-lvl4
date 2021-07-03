@@ -81,6 +81,7 @@ const Signup = () => {
                           isInvalid={!!errors.username || signupFailed}
                           ref={inputRef}
                           disabled={isSubmitting}
+                          placeholder={t('signup.placeholders.name')}
                         />
                         <Form.Label htmlFor="floatingUsername">
                           {t('signup.placeholders.name')}
@@ -101,6 +102,7 @@ const Signup = () => {
                           value={values.password}
                           isInvalid={!!errors.password || signupFailed}
                           disabled={isSubmitting}
+                          placeholder={t('signup.placeholders.password')}
                         />
                         <Form.Label htmlFor="password">
                           {t('signup.placeholders.password')}
@@ -121,6 +123,7 @@ const Signup = () => {
                           value={values.passwordConfirmation}
                           isInvalid={!!errors.passwordConfirmation || signupFailed}
                           disabled={isSubmitting}
+                          placeholder={t('signup.placeholders.repeatPassword')}
                         />
                         <Form.Label htmlFor="passwordConfirmation">
                           {t('signup.placeholders.repeatPassword')}

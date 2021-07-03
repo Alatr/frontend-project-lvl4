@@ -73,6 +73,7 @@ const Login = () => {
                       isInvalid={authFailed}
                       ref={inputRef}
                       disabled={formik.isSubmitting}
+                      placeholder={t('login.placeholders.name')}
                     />
                     <Form.Label htmlFor="username">{t('login.placeholders.name')}</Form.Label>
                   </Form.Group>
@@ -88,6 +89,7 @@ const Login = () => {
                       value={formik.values.password}
                       isInvalid={authFailed}
                       disabled={formik.isSubmitting}
+                      placeholder={t('login.placeholders.password')}
                     />
                     <Form.Label htmlFor="password">{t('login.placeholders.password')}</Form.Label>
                     <Form.Control.Feedback type="invalid">
