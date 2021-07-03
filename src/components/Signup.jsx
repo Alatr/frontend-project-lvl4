@@ -102,7 +102,7 @@ const Signup = () => {
                           isInvalid={!!errors.password || signupFailed}
                           disabled={isSubmitting}
                         />
-                        <Form.Label htmlFor="floatingUsername">
+                        <Form.Label htmlFor="floatingPassword">
                           {t('signup.placeholders.password')}
                         </Form.Label>
                         <Form.Control.Feedback type="invalid">
@@ -121,7 +121,7 @@ const Signup = () => {
                           isInvalid={!!errors.passwordConfirmation || signupFailed}
                           disabled={isSubmitting}
                         />
-                        <Form.Label htmlFor="floatingPassword">
+                        <Form.Label htmlFor="passwordConfirmation">
                           {t('signup.placeholders.repeatPassword')}
                         </Form.Label>
                         <Form.Control.Feedback type="invalid">
