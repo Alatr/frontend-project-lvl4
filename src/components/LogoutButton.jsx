@@ -1,6 +1,6 @@
 import React from 'react';
-import { useAuth } from '@hooks/index.js';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../hooks/index.js';
 
 const LogoutButton = () => {
   const auth = useAuth();

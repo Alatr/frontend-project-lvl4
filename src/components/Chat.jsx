@@ -2,17 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Field, Form, Formik } from 'formik';
 import _ from 'lodash';
-import { useSocket } from '@hooks/index.js';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
+import { useSocket } from '../hooks/index.js';
 
 import {
   getMessagesByCurrentChannelId,
   getCurrentChannelId,
   getCurrentChannelName,
   getMessagesCount,
-} from '@selectors/index.js';
+} from '../selectors/index.js';
 
 const mapStateToProps = (state) => {
   const props = {

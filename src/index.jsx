@@ -1,4 +1,4 @@
-import '@assets/styles/application.scss';
+import '../assets/styles/application.scss';
 import 'regenerator-runtime/runtime.js';
 
 import React from 'react';

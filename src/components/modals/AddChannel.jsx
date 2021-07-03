@@ -5,11 +5,11 @@ import { Formik } from 'formik';
 import _ from 'lodash';
 import * as yup from 'yup';
 
-import { changeCurrentChannelId } from '@slices/channels.js';
-import { useSocket } from '@hooks/index.js';
 import { useTranslation } from 'react-i18next';
+import { changeCurrentChannelId } from '../../slices/channels.js';
+import { useSocket } from '../../hooks/index.js';
 
-import { getChannelsNames } from '@selectors/index.js';
+import { getChannelsNames } from '../../selectors/index.js';
 
 const AddCannel = ({ onHide, modalInfo: { type } }) => {
   const { t } = useTranslation();

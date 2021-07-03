@@ -4,10 +4,10 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
-import { useSocket } from '@hooks/index.js';
 import { useTranslation } from 'react-i18next';
+import { useSocket } from '../../hooks/index.js';
 
-import { getChannelsNames, getChannelsById } from '@selectors/index.js';
+import { getChannelsNames, getChannelsById } from '../../selectors/index.js';
 
 const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
   const { t } = useTranslation();

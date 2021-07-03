@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-import { useSocket } from '@hooks/index.js';
 import { useTranslation } from 'react-i18next';
+import { useSocket } from '../../hooks/index.js';
 
 const RemoveChannel = ({ onHide, modalInfo: { type, channelId: id } }) => {
   const { t } = useTranslation();

@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
-import { changeCurrentChannelId } from '@slices/channels.js';
-import { getChannels, getCurrentChannelId } from '@selectors/index.js';
+import { changeCurrentChannelId } from '../slices/channels.js';
+import { getChannels, getCurrentChannelId } from '../selectors/index.js';
 import getModal from './modals/index.js';
 
 const mapStateToProps = (state) => {
