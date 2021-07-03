@@ -94,7 +94,9 @@ const Login = () => {
                     <Form.Label htmlFor="floatingPassword">
                       {t('login.placeholders.password')}
                     </Form.Label>
-                    <Form.Control.Feedback type="invalid">{t('errors.auth')}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {!formik.isSubmitting && t('errors.auth')}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </div>
                 <Button type="submit" variant="primary" disabled={formik.isSubmitting} block>
