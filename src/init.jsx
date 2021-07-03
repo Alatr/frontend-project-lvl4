@@ -8,12 +8,12 @@ import { io } from 'socket.io-client';
 import { setLocale } from 'yup';
 import { useTranslation, I18nextProvider } from 'react-i18next';
 
-import { addMessage } from '@slices/messages.js';
 import { useAuth } from '@hooks/index.js';
 
 import configureStore from '@lib/configure-store.js';
 import i18n from '@lib/i18n.js';
 import { addChannel, removeChannel, renameChannel } from './slices/channels.js';
+import { addMessage } from './slices/messages.js';
 import { authContext, socketContext } from './contexts/index.js';
 import routes from './routes-config.js';
 import LogoutButton from './components/LogoutButton.jsx';
