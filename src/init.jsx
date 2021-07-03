@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  BrowserRouter as Router, Switch, Route, Redirect, Link,
+  BrowserRouter as Router, Switch, Route, Redirect,
 } from 'react-router-dom';
 
 import { Provider, useDispatch } from 'react-redux';
@@ -17,6 +17,7 @@ import i18n from '@lib/i18n.js';
 import { authContext, socketContext } from './contexts/index.js';
 import routes from './routes-config.js';
 import LogoutButton from './components/LogoutButton.jsx';
+import Footer from './components/Footer.jsx';
 
 const store = configureStore();
 
@@ -112,13 +113,7 @@ const App = () => (
                 <Route path={routes.signupPage.path} component={routes.signupPage.component} />
                 <Route path={routes.notMatchPage.path} component={routes.notMatchPage.component} />
               </Switch>
-              <div className="card-footer p-4">
-                <div className="text-center">
-                  <span>Нет аккаунта?</span>
-                  {' '}
-                  <Link to={routes.signupPage.path}>Регистрация</Link>
-                </div>
-              </div>
+              <Footer />
             </div>
           </Router>
         </InstancesI18nextProvider>

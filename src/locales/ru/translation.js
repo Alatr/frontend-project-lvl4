@@ -31,6 +31,7 @@ export default {
   },
   signup: {
     title: 'Регистрация',
+    question: 'Нет аккаунта?',
     placeholders: {
       name: 'Имя пользователя',
       password: 'Пароль',
