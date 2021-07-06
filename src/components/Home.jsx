@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Spinner } from 'react-bootstrap';
-import { useAuth, useSocket } from '../hooks/index.js';
+import { useAuth } from '../hooks/index.js';
 import initFetch from '../actions/init-fetch.js';
 
 import Channels from './Channels';
@@ -22,7 +22,6 @@ const mapStateToProps = ({ channels }) => {
 
 const Home = ({ loadingChannelsStatus, initFetch: initFetchAction }) => {
   const auth = useAuth();
-  const { socketConnected } = useSocket();
 
   useEffect(() => {
     initFetchAction();
@@ -34,7 +33,7 @@ const Home = ({ loadingChannelsStatus, initFetch: initFetchAction }) => {
   if (loadingChannelsStatus === 'fulfilled') {
     auth.logIn();
   }
-  if (loadingChannelsStatus === 'idle' || !socketConnected) {
+  if (loadingChannelsStatus === 'idle') {
     return (
       <div className="container flex-grow-1 my-4 overflow-hidden rounded shadow">
         <div className="d-flex justify-content-center align-items-center h-100">

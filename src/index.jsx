@@ -1,8 +1,9 @@
 import '../assets/styles/application.scss';
 import 'regenerator-runtime/runtime.js';
 
-import React from 'react';
 import { render } from 'react-dom';
-import App from './init.jsx';
+import { io } from 'socket.io-client';
 
-render(<App />, document.getElementById('chat'));
+import run from './init.jsx';
+
+render(run(io()), document.getElementById('chat'));

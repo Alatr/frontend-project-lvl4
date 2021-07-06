@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import imgLogin from '@assets/static/images/login.jpg';
+import imgLogin from '../../assets/static/images/login.jpg';
 import { useAuth } from '../hooks/index.js';
 import api from '../routes-api.js';
 
@@ -97,7 +97,12 @@ const Login = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </div>
-                <Button type="submit" variant="primary" disabled={formik.isSubmitting} block>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  disabled={formik.isSubmitting}
+                  className="w-100"
+                >
                   {t('login.loginButtonText')}
                 </Button>
               </Form>

@@ -4,7 +4,12 @@ import initFetch from '../actions/init-fetch.js';
 
 const channelsSlice = createSlice({
   name: 'channels',
-  initialState: { byId: {}, allIds: [], loading: 'idle' },
+  initialState: {
+    byId: {},
+    allIds: [],
+    loading: 'idle',
+    ui: {},
+  },
   reducers: {
     /* eslint-disable no-param-reassign */
     changeCurrentChannelId(state, { payload: { id } }) {

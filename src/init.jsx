@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
-  BrowserRouter as Router, Switch, Route, Redirect,
+  BrowserRouter as Router, Switch, Route, Redirect, Link,
 } from 'react-router-dom';
 
+import i18n from 'i18next';
+import { initReactI18next, useTranslation, I18nextProvider } from 'react-i18next';
+
 import { Provider, useDispatch } from 'react-redux';
-import { io } from 'socket.io-client';
 import { setLocale } from 'yup';
-import { useTranslation, I18nextProvider } from 'react-i18next';
+import ruTranslation from './locales/ru/translation.js';
 
 import configureStore from './lib/configure-store.js';
-import i18n from './lib/i18n.js';
 import { useAuth } from './hooks/index.js';
 import { addChannel, removeChannel, renameChannel } from './slices/channels.js';
 import { addMessage } from './slices/messages.js';
@@ -17,8 +18,6 @@ import { authContext, socketContext } from './contexts/index.js';
 import routes from './routes-config.js';
 import LogoutButton from './components/LogoutButton.jsx';
 import Footer from './components/Footer.jsx';
-
-const store = configureStore();
 
 const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(!!JSON.parse(localStorage.getItem('userId')));
@@ -33,45 +32,28 @@ const AuthProvider = ({ children }) => {
     <authContext.Provider value={{ loggedIn, logIn, logOut }}>{children}</authContext.Provider>
   );
 };
-const SocketProvider = ({ children }) => {
+const SocketProvider = ({ children, socket }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const dispatch = useDispatch();
-  const socket = io();
 
   useEffect(() => {
-    socket.on('connect', () => {
-      socket.on('newChannel', (data) => {
-        dispatch(addChannel(data));
-      });
-      socket.on('removeChannel', ({ id }) => {
-        dispatch(removeChannel({ channelId: id }));
-      });
-      socket.on('renameChannel', (data) => {
-        dispatch(renameChannel(data));
-      });
-      socket.on('newMessage', (data) => {
-        dispatch(addMessage(data));
-      });
-      setSocketConnected(true);
+    socket.on('newChannel', (data) => {
+      dispatch(addChannel(data));
     });
+    socket.on('removeChannel', ({ id }) => {
+      dispatch(removeChannel({ channelId: id }));
+    });
+    socket.on('renameChannel', (data) => {
+      dispatch(renameChannel(data));
+    });
+    socket.on('newMessage', (data) => {
+      dispatch(addMessage(data));
+    });
+    setSocketConnected(true);
   }, []);
   return (
     <socketContext.Provider value={{ socket, socketConnected }}>{children}</socketContext.Provider>
   );
-};
-const InstancesI18nextProvider = ({ children }) => {
-  const { t } = useTranslation();
-  setLocale({
-    mixed: {
-      required: t('errors.required'),
-      notOneOf: t('errors.notOneOf'),
-    },
-    string: {
-      min: t('errors.min'),
-      max: t('errors.max'),
-    },
-  });
-  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 };
 const PrivateRoute = ({ path, component: Component }) => {
   const auth = useAuth();
@@ -87,38 +69,72 @@ const PrivateRoute = ({ path, component: Component }) => {
   );
 };
 
-const App = () => (
-  <Provider store={store}>
-    <AuthProvider>
-      <SocketProvider>
-        <InstancesI18nextProvider>
-          <Router>
-            <div className="d-flex flex-column h-100">
-              <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-                <div className="container">
-                  <a className="navbar-brand" href="/">
-                    Hexlet Chat
-                  </a>
-                  <LogoutButton />
-                </div>
-              </nav>
-              <Switch>
-                <PrivateRoute
-                  exact
-                  path={routes.homePage.path}
-                  component={routes.homePage.component}
-                />
-                <Route path={routes.loginPage.path} component={routes.loginPage.component} />
-                <Route path={routes.signupPage.path} component={routes.signupPage.component} />
-                <Route path={routes.notMatchPage.path} component={routes.notMatchPage.component} />
-              </Switch>
-              <Footer />
-            </div>
-          </Router>
-        </InstancesI18nextProvider>
-      </SocketProvider>
-    </AuthProvider>
-  </Provider>
-);
+const App = ({ socket }) => {
+  const store = configureStore();
 
-export default App;
+  const resources = {
+    ru: {
+      translation: ruTranslation,
+    },
+  };
+  i18n.use(initReactI18next).init({
+    resources,
+    fallbackLng: 'ru',
+    lng: 'ru',
+    react: {
+      wait: true,
+      useSuspense: false,
+    },
+  });
+
+  const { t } = useTranslation();
+  setLocale({
+    mixed: {
+      required: t('errors.required'),
+      notOneOf: t('errors.notOneOf'),
+    },
+    string: {
+      min: t('errors.min'),
+      max: t('errors.max'),
+    },
+  });
+
+  return (
+    <Provider store={store}>
+      <AuthProvider>
+        <SocketProvider socket={socket}>
+          <I18nextProvider i18n={i18n}>
+            <Router>
+              <div className="d-flex flex-column h-100">
+                <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
+                  <div className="container">
+                    <Link className="navbar-brand" to={routes.homePage.path}>
+                      Hexlet Chat
+                    </Link>
+                    <LogoutButton />
+                  </div>
+                </nav>
+                <Switch>
+                  <PrivateRoute
+                    exact
+                    path={routes.homePage.path}
+                    component={routes.homePage.component}
+                  />
+                  <Route path={routes.loginPage.path} component={routes.loginPage.component} />
+                  <Route path={routes.signupPage.path} component={routes.signupPage.component} />
+                  <Route
+                    path={routes.notMatchPage.path}
+                    component={routes.notMatchPage.component}
+                  />
+                </Switch>
+                <Footer />
+              </div>
+            </Router>
+          </I18nextProvider>
+        </SocketProvider>
+      </AuthProvider>
+    </Provider>
+  );
+};
+/* eslint-disable react/display-name */
+export default (socket) => <App socket={socket} />;

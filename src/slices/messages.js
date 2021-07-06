@@ -11,7 +11,9 @@ const messagesSlice = createSlice({
       /* eslint-disable-next-line no-param-reassign */
       state.byId[payload.id] = payload;
       /* eslint-disable-next-line no-param-reassign */
-      state.allIds.push(payload.id);
+      state.allIds = _.uniq(state.allIds.concat(payload.id));
+
+      // state.allIds.push(payload.id);
     },
   },
   extraReducers: {

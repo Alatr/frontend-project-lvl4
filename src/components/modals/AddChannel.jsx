@@ -73,6 +73,7 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
                 isInvalid={!!errors.newChannelName}
                 ref={inputRef}
                 disabled={isSubmitting}
+                data-testid="add-channel"
               />
               <Form.Control.Feedback type="invalid">{errors.newChannelName}</Form.Control.Feedback>
               <div className="d-flex justify-content-end">
@@ -80,6 +81,7 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
                   onClick={onHide}
                   disabled={isSubmitting}
                   className="me-2"
+                  type="button"
                   variant="secondary"
                 >
                   {t('modal.undoBtn')}

@@ -22,12 +22,14 @@ export default {
     title: 'Каналы',
     remove: 'Удалить',
     rename: 'Переименовать',
+    add: '+',
   },
   chat: {
     messagesCount_0: '{{count}} сообщение',
     messagesCount_1: '{{count}} сообщения',
     messagesCount_2: '{{count}} сообщений',
     chatPlaceholder: 'Введите сообщение...',
+    sand: 'Отправить',
   },
   signup: {
     title: 'Регистрация',
