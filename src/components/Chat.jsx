@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import { Field, Form, Formik } from 'formik';
+import { Formik } from 'formik';
+import { Button, Form } from 'react-bootstrap';
+
 import _ from 'lodash';
 import * as yup from 'yup';
 
@@ -35,6 +37,11 @@ const Chat = ({
   useEffect(() => {
     inputRef.current.focus();
   }, []);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [currentChannelName]);
+
   return (
     <>
       <div className="bg-light mb-4 p-3 shadow-sm small">
@@ -76,25 +83,25 @@ const Chat = ({
             );
           }}
         >
-          {({ isValid, dirty }) => (
-            <Form>
+          {({
+            handleSubmit, handleChange, values, isSubmitting, isValid, dirty,
+          }) => (
+            <Form noValidate onSubmit={handleSubmit}>
               <div className="input-group">
-                <Field name="body">
-                  {({ field, form: { isSubmitting } }) => (
-                    <input
-                      type="text"
-                      data-testid="new-message"
-                      placeholder={t('chat.chatPlaceholder')}
-                      className="border-0 form-control"
-                      ref={inputRef}
-                      disabled={isSubmitting}
-                      /* eslint-disable-next-line react/jsx-props-no-spreading */
-                      {...field}
-                    />
-                  )}
-                </Field>
+                <Form.Control
+                  type="text"
+                  name="body"
+                  className="border-0 form-control"
+                  value={values.body}
+                  onChange={handleChange}
+                  placeholder={t('chat.chatPlaceholder')}
+                  ref={inputRef}
+                  disabled={isSubmitting}
+                  data-testid="new-message"
+                />
                 <div className="input-group-append">
-                  <button
+                  <Button
+                    variant="outline"
                     type="submit"
                     className="btn btn-group-vertical"
                     disabled={!isValid || !dirty}
@@ -112,7 +119,7 @@ const Chat = ({
                       />
                     </svg>
                     <span className="visually-hidden">{t('chat.sand')}</span>
-                  </button>
+                  </Button>
                 </div>
               </div>
             </Form>

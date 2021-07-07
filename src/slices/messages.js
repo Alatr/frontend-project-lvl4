@@ -5,7 +5,12 @@ import { removeChannel } from './channels.js';
 
 const messagesSlice = createSlice({
   name: 'messages',
-  initialState: { byId: {}, allIds: [], loading: 'idle' },
+  initialState: {
+    byId: {},
+    allIds: [],
+    loading: 'idle',
+    ui: {},
+  },
   reducers: {
     addMessage(state, { payload }) {
       /* eslint-disable-next-line no-param-reassign */

@@ -6,14 +6,6 @@ module.exports = {
   mode: process.env.NODE_ENV || 'development',
   resolve: {
     extensions: ['.js', '.jsx'],
-    alias: {
-      '@assets': path.resolve(__dirname, './assets'),
-      '@lib': path.resolve(__dirname, './src/lib'),
-      '@locales': path.resolve(__dirname, './src/locales'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
-      '@selectors': path.resolve(__dirname, './src/selectors'),
-      '@slices': path.resolve(__dirname, './src/slices'),
-    },
   },
   output: {
     path: path.join(__dirname, 'dist', 'public'),

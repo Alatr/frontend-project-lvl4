@@ -6,7 +6,7 @@ import initFetch from '../actions/init-fetch.js';
 
 import Channels from './Channels';
 import Chat from './Chat';
-// TODO thinking about name fetchInitAction and check warning in webpack console
+
 const actionsCreators = {
   initFetch,
 };
@@ -17,8 +17,6 @@ const mapStateToProps = ({ channels }) => {
   };
   return props;
 };
-
-// TODO think about separete component with separate redux
 
 const Home = ({ loadingChannelsStatus, initFetch: initFetchAction }) => {
   const auth = useAuth();

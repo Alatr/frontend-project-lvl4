@@ -8,13 +8,15 @@ import { initReactI18next, useTranslation, I18nextProvider } from 'react-i18next
 
 import { Provider, useDispatch } from 'react-redux';
 import { setLocale } from 'yup';
+import { configureStore } from '@reduxjs/toolkit';
 import ruTranslation from './locales/ru/translation.js';
 
-import configureStore from './lib/configure-store.js';
-import { useAuth } from './hooks/index.js';
+import reducers from './slices/index.js';
 import { addChannel, removeChannel, renameChannel } from './slices/channels.js';
 import { addMessage } from './slices/messages.js';
+
 import { authContext, socketContext } from './contexts/index.js';
+import { useAuth } from './hooks/index.js';
 import routes from './routes-config.js';
 import LogoutButton from './components/LogoutButton.jsx';
 import Footer from './components/Footer.jsx';
@@ -70,7 +72,10 @@ const PrivateRoute = ({ path, component: Component }) => {
 };
 
 const App = ({ socket }) => {
-  const store = configureStore();
+  const store = configureStore({
+    reducer: reducers,
+    preloadedState: {},
+  });
 
   const resources = {
     ru: {

@@ -13,7 +13,7 @@ const channelsSlice = createSlice({
   reducers: {
     /* eslint-disable no-param-reassign */
     changeCurrentChannelId(state, { payload: { id } }) {
-      state.currentChannelId = id;
+      state.ui.currentChannelId = id;
     },
     addChannel(state, { payload }) {
       state.byId[payload.id] = payload;
@@ -24,10 +24,12 @@ const channelsSlice = createSlice({
         ...state,
         byId: _.omit(state.byId, channelId),
         allIds: state.allIds.filter((id) => id !== channelId),
-        currentChannelId:
-          state.currentChannelId === channelId
-            ? state.defaultCurrentChannelId
-            : state.currentChannelId,
+        ui: {
+          currentChannelId:
+            state.ui.currentChannelId === channelId
+              ? state.defaultCurrentChannelId
+              : state.ui.currentChannelId,
+        },
       };
     },
     renameChannel(state, { payload: { id, name } }) {
@@ -41,7 +43,7 @@ const channelsSlice = createSlice({
       byId: _.keyBy(channels, 'id'),
       allIds: channels.map((channel) => channel.id),
       loading: 'fulfilled',
-      currentChannelId,
+      ui: { currentChannelId },
       defaultCurrentChannelId: currentChannelId,
     }),
     [initFetch.rejected]: (state, action) => {

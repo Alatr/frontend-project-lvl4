@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Dropdown, Button, ButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
 import { changeCurrentChannelId } from '../slices/channels.js';
@@ -47,7 +46,7 @@ const ChannelItem = ({
             <Button
               variant={getSelectedButtonVariant(channelId, currentChannelId)}
               onClick={changeChannelHandle(channelId)}
-              className={classNames('w-100', 'px-4', 'rounded-0', 'text-start', 'btn')}
+              className="w-100 px-4 rounded-0 text-start btn"
             >
               <span className="me-1">#</span>
               {name}
@@ -55,7 +54,6 @@ const ChannelItem = ({
             <Dropdown.Toggle
               variant={getSelectedButtonVariant(channelId, currentChannelId)}
               split
-              id="dropdown-custom-2"
             />
           </ButtonGroup>
           <Dropdown.Menu>
@@ -72,7 +70,7 @@ const ChannelItem = ({
           type="button"
           onClick={changeChannelHandle(channelId)}
           variant={getSelectedButtonVariant(channelId, currentChannelId)}
-          className={classNames('w-100', 'px-4', 'rounded-0', 'text-start', 'btn')}
+          className="w-100 px-4 rounded-0 text-start btn"
         >
           <span className="me-3">#</span>
           {name}
@@ -96,7 +94,8 @@ const Channels = ({ channels, currentChannelId, changeCurrentChannelIdAction }) 
     <>
       <div className="d-flex justify-content-between mb-2 px-4">
         <span>{t('channel.title')}</span>
-        <button
+        <Button
+          variant="outline"
           type="button"
           className="p-0 text-primary btn btn-group-vertical"
           onClick={() => showModal('adding')}
@@ -112,7 +111,7 @@ const Channels = ({ channels, currentChannelId, changeCurrentChannelIdAction }) 
             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
           </svg>
           <span className="visually-hidden">{t('channel.add')}</span>
-        </button>
+        </Button>
       </div>
       <ul className="nav flex-column nav-pills nav-fill">
         {channels.map((channelData) => (

@@ -5,7 +5,7 @@ const getChannelsState = (state) => state?.channels;
 
 export const getCurrentChannelId = createSelector(
   getChannelsState,
-  (state) => state?.currentChannelId,
+  (state) => state?.ui?.currentChannelId,
 );
 export const getChannelsById = createSelector(getChannelsState, (state) => state?.byId);
 export const getChannelsAllIds = createSelector(getChannelsState, (state) => state?.allIds);
