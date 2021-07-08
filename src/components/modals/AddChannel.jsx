@@ -45,7 +45,7 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
               .notOneOf(channelNames),
           })}
           onSubmit={(values, { resetForm }) => {
-            socket.emit(
+            socket.volatile.emit(
               'newChannel',
               { name: values.newChannelName, removable: true, id: _.uniqueId() },
               ({ data: { id } }) => {

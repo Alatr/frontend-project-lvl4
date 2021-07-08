@@ -39,10 +39,14 @@ const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
               .notOneOf(channelNames),
           })}
           onSubmit={(values, { resetForm }) => {
-            socket.emit('renameChannel', { name: values.newChannelName, id: channelId }, () => {
-              resetForm();
-              onHide();
-            });
+            socket.volatile.emit(
+              'renameChannel',
+              { name: values.newChannelName, id: channelId },
+              () => {
+                resetForm();
+                onHide();
+              },
+            );
           }}
           validateOnChange={false}
           initialValues={{
@@ -62,6 +66,7 @@ const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
                 isInvalid={!!errors.newChannelName}
                 ref={inputRef}
                 disabled={isSubmitting}
+                data-testid="rename-channel"
               />
               <Form.Control.Feedback type="invalid">{errors.newChannelName}</Form.Control.Feedback>
               <div className="d-flex justify-content-end">

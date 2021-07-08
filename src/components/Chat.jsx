@@ -69,7 +69,7 @@ const Chat = ({
             body: yup.string().required(),
           })}
           onSubmit={(values, { resetForm }) => {
-            socket.emit(
+            socket.volatile.emit(
               'newMessage',
               {
                 body: values.body,

@@ -32,7 +32,7 @@ const RemoveChannel = ({ onHide, modalInfo: { type, channelId: id } }) => {
             variant="danger"
             onClick={() => {
               setIsSubmitting(true);
-              socket.emit('removeChannel', { id }, () => {
+              socket.volatile.emit('removeChannel', { id }, () => {
                 setIsSubmitting(true);
                 onHide();
               });

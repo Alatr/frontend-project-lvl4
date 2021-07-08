@@ -53,6 +53,7 @@ const ChannelItem = ({
             </Button>
             <Dropdown.Toggle
               variant={getSelectedButtonVariant(channelId, currentChannelId)}
+              data-testid="dropdown-toggle"
               split
             />
           </ButtonGroup>
