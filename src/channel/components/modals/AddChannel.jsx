@@ -5,8 +5,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import { changeCurrentChannelId, getChannelsNames } from '../../index.js';
-import { useApiService } from '../../../hooks/index.js';
+import { changeCurrentChannelId, getChannelsNames, useApiService } from '../../index.js';
 
 const AddCannel = ({ onHide, modalInfo: { type } }) => {
   const { t } = useTranslation();
@@ -43,7 +42,6 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
           })}
           onSubmit={(values, { resetForm }) => {
             addChannel({ name: values.newChannelName, removable: true }, ({ data: { id } }) => {
-              console.log('cb');
               dispatch(changeCurrentChannelId({ id }));
               resetForm();
               onHide();

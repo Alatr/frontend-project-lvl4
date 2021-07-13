@@ -7,7 +7,6 @@ import initFetch from '../actions/init-fetch.js';
 import { Chat } from '../chat/index.js';
 import { Channels } from '../channel/index.js';
 
-console.log(Chat);
 const actionsCreators = {
   initFetch,
 };
@@ -21,7 +20,6 @@ const mapStateToProps = ({ channels }) => {
 
 const Home = ({ loadingChannelsStatus, initFetch: initFetchAction }) => {
   const auth = useAuth();
-
   useEffect(() => {
     initFetchAction();
   }, []);

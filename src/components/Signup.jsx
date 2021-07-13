@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
 import imgSignup from '../../assets/static/images/signup.jpg';
-import { useAuth } from '../hooks/index.js';
+import { useAuth, useLogger } from '../hooks/index.js';
 import api from '../routes-api.js';
 
 const Signup = () => {
@@ -15,6 +15,7 @@ const Signup = () => {
   const inputRef = useRef();
   const history = useHistory();
   const location = useLocation();
+  const logger = useLogger();
   const { t } = useTranslation();
 
   const [signupFailed, setSignupFailed] = useState(false);
@@ -54,6 +55,7 @@ const Signup = () => {
                       inputRef.current.select();
                       return;
                     }
+                    logger.logError(error);
                     throw error;
                   }
                 }}

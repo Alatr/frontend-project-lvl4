@@ -20,8 +20,6 @@ const messagesSlice = createSlice({
       state.byId[payload.id] = payload;
       /* eslint-disable-next-line no-param-reassign */
       state.allIds = _.uniq(state.allIds.concat(payload.id));
-
-      // state.allIds.push(payload.id);
     },
   },
   extraReducers: {

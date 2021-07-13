@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 import { useTranslation } from 'react-i18next';
-import { useApiService } from '../../../hooks/index.js';
+import { useApiService } from '../../index.js';
 
 const RemoveChannel = ({ onHide, modalInfo: { type, channelId: id } }) => {
   const { t } = useTranslation();

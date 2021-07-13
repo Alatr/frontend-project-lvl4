@@ -7,7 +7,7 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import imgLogin from '../../assets/static/images/login.jpg';
-import { useAuth } from '../hooks/index.js';
+import { useAuth, useLogger } from '../hooks/index.js';
 import api from '../routes-api.js';
 
 const Login = () => {
@@ -15,6 +15,8 @@ const Login = () => {
   const inputRef = useRef();
   const history = useHistory();
   const location = useLocation();
+  const logger = useLogger();
+
   const { t } = useTranslation();
 
   const [authFailed, setAuthFailed] = useState(false);
@@ -44,6 +46,7 @@ const Login = () => {
           inputRef.current.select();
           return;
         }
+        logger.logError(error);
         throw error;
       }
     },

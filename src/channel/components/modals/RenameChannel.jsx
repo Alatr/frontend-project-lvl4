@@ -5,9 +5,8 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import { useApiService } from '../../../hooks/index.js';
 
-import { getChannelsNames, getChannelsById } from '../../index.js';
+import { getChannelsNames, getChannelsById, useApiService } from '../../index.js';
 
 const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
   const { t } = useTranslation();
