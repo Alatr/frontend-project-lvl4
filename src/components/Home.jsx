@@ -4,9 +4,10 @@ import { Spinner } from 'react-bootstrap';
 import { useAuth } from '../hooks/index.js';
 import initFetch from '../actions/init-fetch.js';
 
-import Channels from './Channels';
-import Chat from './Chat';
+import { Chat } from '../chat/index.js';
+import { Channels } from '../channel/index.js';
 
+console.log(Chat);
 const actionsCreators = {
   initFetch,
 };

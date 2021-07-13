@@ -1,4 +1,4 @@
-# slask chat
+# Slask chat
 
 this project presents a simplified analogue version of slask chat
 
@@ -24,6 +24,11 @@ $ make install
 ```sh
 $ make start
 # open http://localhost:5000
+```
+## Run test
+
+```sh
+$ make test
 ```
 ## Heroku Open App
 

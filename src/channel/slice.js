@@ -1,7 +1,9 @@
+import { createSelector } from 'reselect';
 import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import initFetch from '../actions/init-fetch.js';
 
+// slice
 const channelsSlice = createSlice({
   name: 'channels',
   initialState: {
@@ -54,10 +56,39 @@ const channelsSlice = createSlice({
   },
 });
 
-const { actions, reducer } = channelsSlice;
-
 export const {
-  changeCurrentChannelId, addChannel, removeChannel, renameChannel,
-} = actions;
+  actions: {
+    changeCurrentChannelId, addChannel, removeChannel, renameChannel,
+  },
+  reducer,
+} = channelsSlice;
 
-export default reducer;
+// selector
+const getChannelsState = (state) => state?.channels;
+
+export const getCurrentChannelId = createSelector(
+  getChannelsState,
+  (state) => state?.ui?.currentChannelId,
+);
+export const getChannelsById = createSelector(getChannelsState, (state) => state?.byId);
+export const getChannelsAllIds = createSelector(getChannelsState, (state) => state?.allIds);
+
+export const getChannels = createSelector(
+  getChannelsById,
+  getChannelsAllIds,
+  (channelsById, channelsAllIds) => channelsAllIds.map((id) => channelsById[id]),
+);
+
+export const getCurrentChannelName = createSelector(
+  getChannelsById,
+  getCurrentChannelId,
+  (channels, currentChannelId) => channels[currentChannelId]?.name,
+);
+
+export const getDefaultChannelId = createSelector(
+  getChannelsState,
+  (channelsState) => channelsState?.defaultCurrentChannelId,
+);
+
+/* eslint-disable-next-line max-len */
+export const getChannelsNames = createSelector(getChannels, (channels) => channels.map(({ name }) => name));

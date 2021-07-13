@@ -1,24 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  BrowserRouter as Router, Switch, Route, Redirect, Link,
+  BrowserRouter as Router, Switch, Route, Redirect,
 } from 'react-router-dom';
 
+import Rollbar from 'rollbar';
 import i18n from 'i18next';
 import { initReactI18next, useTranslation, I18nextProvider } from 'react-i18next';
 
 import { Provider, useDispatch } from 'react-redux';
 import { setLocale } from 'yup';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import ruTranslation from './locales/ru/translation.js';
 
-import reducers from './slices/index.js';
-import { addChannel, removeChannel, renameChannel } from './slices/channels.js';
-import { addMessage } from './slices/messages.js';
+import { reducer as messagesReducer, addMessage as addMessageAction } from './chat/index.js';
+import {
+  reducer as channelsReducer,
+  addChannel as addChannelAction,
+  removeChannel as removeChannelAction,
+  renameChannel as renameChannelAction,
+} from './channel/index.js';
+// import { addChannel, removeChannel, renameChannel } from './slices/channels.js';
+// import { addMessage } from './slices/messages.js';
 
-import { authContext, socketContext } from './contexts/index.js';
+import { authContext, socketContext, rollbarContext } from './contexts/index.js';
 import { useAuth } from './hooks/index.js';
 import routes from './routes-config.js';
-import LogoutButton from './components/LogoutButton.jsx';
+import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 
 const AuthProvider = ({ children }) => {
@@ -34,27 +41,56 @@ const AuthProvider = ({ children }) => {
     <authContext.Provider value={{ loggedIn, logIn, logOut }}>{children}</authContext.Provider>
   );
 };
+/* eslint-disable-next-line max-len */
+const RollbarProvider = ({ children, rollbar }) => (
+  <rollbarContext.Provider value={{ rollbar }}>{children}</rollbarContext.Provider>
+);
 const SocketProvider = ({ children, socket }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
     socket.on('newChannel', (data) => {
-      dispatch(addChannel(data));
+      dispatch(addChannelAction(data));
     });
     socket.on('removeChannel', ({ id }) => {
-      dispatch(removeChannel({ channelId: id }));
+      dispatch(removeChannelAction({ channelId: id }));
     });
     socket.on('renameChannel', (data) => {
-      dispatch(renameChannel(data));
+      dispatch(renameChannelAction(data));
     });
     socket.on('newMessage', (data) => {
-      dispatch(addMessage(data));
+      dispatch(addMessageAction(data));
     });
     setSocketConnected(true);
   }, []);
+
+  const addChannel = useCallback((data, cb) => {
+    socket.volatile.emit('newChannel', data, cb);
+  });
+  const removeChannel = useCallback((data, cb) => {
+    socket.volatile.emit('removeChannel', data, cb);
+  });
+  const renameChannel = useCallback((data, cb) => {
+    socket.volatile.emit('renameChannel', data, cb);
+  });
+  const addMessage = useCallback((data, cb) => {
+    socket.volatile.emit('newMessage', data, cb);
+  });
+
   return (
-    <socketContext.Provider value={{ socket, socketConnected }}>{children}</socketContext.Provider>
+    <socketContext.Provider
+      value={{
+        socket,
+        socketConnected,
+        addChannel,
+        removeChannel,
+        renameChannel,
+        addMessage,
+      }}
+    >
+      {children}
+    </socketContext.Provider>
   );
 };
 const PrivateRoute = ({ path, component: Component }) => {
@@ -72,8 +108,12 @@ const PrivateRoute = ({ path, component: Component }) => {
 };
 
 const App = ({ socket }) => {
+  console.log(channelsReducer);
   const store = configureStore({
-    reducer: reducers,
+    reducer: combineReducers({
+      channels: channelsReducer,
+      messages: messagesReducer,
+    }),
     preloadedState: {},
   });
 
@@ -104,41 +144,43 @@ const App = ({ socket }) => {
     },
   });
 
+  const rollbarConfig = {
+    accessToken: '119359155be74a40a3d0ebe0973ee18f',
+    environment: 'production',
+  };
+
+  const rollbar = new Rollbar(rollbarConfig);
+
   return (
-    <Provider store={store}>
-      <AuthProvider>
-        <SocketProvider socket={socket}>
-          <I18nextProvider i18n={i18n}>
-            <Router>
-              <div className="d-flex flex-column h-100">
-                <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
-                  <div className="container">
-                    <Link className="navbar-brand" to={routes.homePage.path}>
-                      Hexlet Chat
-                    </Link>
-                    <LogoutButton />
-                  </div>
-                </nav>
-                <Switch>
-                  <PrivateRoute
-                    exact
-                    path={routes.homePage.path}
-                    component={routes.homePage.component}
-                  />
-                  <Route path={routes.loginPage.path} component={routes.loginPage.component} />
-                  <Route path={routes.signupPage.path} component={routes.signupPage.component} />
-                  <Route
-                    path={routes.notMatchPage.path}
-                    component={routes.notMatchPage.component}
-                  />
-                </Switch>
-                <Footer />
-              </div>
-            </Router>
-          </I18nextProvider>
-        </SocketProvider>
-      </AuthProvider>
-    </Provider>
+    <RollbarProvider rollbar={rollbar}>
+      <Provider store={store}>
+        <AuthProvider>
+          <SocketProvider socket={socket}>
+            <I18nextProvider i18n={i18n}>
+              <Router>
+                <div className="d-flex flex-column h-100">
+                  <Header />
+                  <Switch>
+                    <PrivateRoute
+                      exact
+                      path={routes.homePage.path}
+                      component={routes.homePage.component}
+                    />
+                    <Route path={routes.loginPage.path} component={routes.loginPage.component} />
+                    <Route path={routes.signupPage.path} component={routes.signupPage.component} />
+                    <Route
+                      path={routes.notMatchPage.path}
+                      component={routes.notMatchPage.component}
+                    />
+                  </Switch>
+                  <Footer />
+                </div>
+              </Router>
+            </I18nextProvider>
+          </SocketProvider>
+        </AuthProvider>
+      </Provider>
+    </RollbarProvider>
   );
 };
 /* eslint-disable react/display-name */

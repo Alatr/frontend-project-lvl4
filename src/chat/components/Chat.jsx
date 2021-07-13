@@ -7,14 +7,10 @@ import _ from 'lodash';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import { useSocket } from '../hooks/index.js';
+// import { useSocket } from '../../hooks/index.js';
 
-import {
-  getMessagesByCurrentChannelId,
-  getCurrentChannelId,
-  getCurrentChannelName,
-  getMessagesCount,
-} from '../selectors/index.js';
+import { getMessagesCount, getMessagesByCurrentChannelId, useSocket } from '../index.js';
+import { getCurrentChannelId, getCurrentChannelName } from '../../channel/index.js';
 
 const mapStateToProps = (state) => {
   const props = {
@@ -29,7 +25,7 @@ const mapStateToProps = (state) => {
 const Chat = ({
   messages, messagesCount, currentChannelId, currentChannelName,
 }) => {
-  const { socket } = useSocket();
+  const { addMessage } = useSocket();
   const inputRef = useRef();
   const { t } = useTranslation();
 
@@ -69,8 +65,7 @@ const Chat = ({
             body: yup.string().required(),
           })}
           onSubmit={(values, { resetForm }) => {
-            socket.volatile.emit(
-              'newMessage',
+            addMessage(
               {
                 body: values.body,
                 channelId: currentChannelId,

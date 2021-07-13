@@ -3,8 +3,8 @@ import { Dropdown, Button, ButtonGroup } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { changeCurrentChannelId } from '../slices/channels.js';
-import { getChannels, getCurrentChannelId } from '../selectors/index.js';
+import { changeCurrentChannelId, getChannels, getCurrentChannelId } from '../index.js';
+// import { getChannels, getCurrentChannelId } from '../../selectors/index.js';
 import getModal from './modals/index.js';
 
 const mapStateToProps = (state) => {

@@ -1,26 +1,24 @@
 import React, { useRef, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Formik } from 'formik';
-import _ from 'lodash';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import { changeCurrentChannelId } from '../../slices/channels.js';
-import { useSocket } from '../../hooks/index.js';
+import { useSocket } from '../../../hooks/index.js';
 
-import { getChannelsNames } from '../../selectors/index.js';
+import { getChannelsNames, getChannelsById } from '../../index.js';
 
-const AddCannel = ({ onHide, modalInfo: { type } }) => {
+const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
   const { t } = useTranslation();
-  const { socket } = useSocket();
+  const { renameChannel } = useSocket();
   const inputRef = useRef();
-  const dispatch = useDispatch();
-
   const channelNames = useSelector(getChannelsNames);
+  const channelsById = useSelector(getChannelsById);
 
   useEffect(() => {
     inputRef.current.focus();
+    inputRef.current.select();
   }, []);
 
   return (
@@ -32,32 +30,23 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
       centered
     >
       <Modal.Header onHide={onHide} closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">{t('modal.addTitle')}</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">{t('modal.renameTitle')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Formik
           validationSchema={yup.object({
-            newChannelName: yup
-              .string()
-              .required()
-              .min(3, t('errors.min'))
-              .max(20, t('errors.max'))
+            newChannelName: yup.string().required().min(3).max(20)
               .notOneOf(channelNames),
           })}
           onSubmit={(values, { resetForm }) => {
-            socket.volatile.emit(
-              'newChannel',
-              { name: values.newChannelName, removable: true, id: _.uniqueId() },
-              ({ data: { id } }) => {
-                dispatch(changeCurrentChannelId({ id }));
-                resetForm();
-                onHide();
-              },
-            );
+            renameChannel({ name: values.newChannelName, id: channelId }, () => {
+              resetForm();
+              onHide();
+            });
           }}
           validateOnChange={false}
           initialValues={{
-            newChannelName: '',
+            newChannelName: channelsById[channelId].name,
           }}
         >
           {({
@@ -73,20 +62,19 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
                 isInvalid={!!errors.newChannelName}
                 ref={inputRef}
                 disabled={isSubmitting}
-                data-testid="add-channel"
+                data-testid="rename-channel"
               />
               <Form.Control.Feedback type="invalid">{errors.newChannelName}</Form.Control.Feedback>
               <div className="d-flex justify-content-end">
                 <Button
-                  onClick={onHide}
                   disabled={isSubmitting}
+                  onClick={onHide}
                   className="me-2"
-                  type="button"
                   variant="secondary"
                 >
                   {t('modal.undoBtn')}
                 </Button>
-                <Button type="submit" disabled={isSubmitting} variant="primary">
+                <Button disabled={isSubmitting} type="submit" variant="primary">
                   {t('modal.sandBtn')}
                 </Button>
               </div>
@@ -98,4 +86,4 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
   );
 };
 
-export default AddCannel;
+export default RenameChannel;
