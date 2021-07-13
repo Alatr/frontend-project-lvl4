@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
-import { authContext, socketContext, rollbarContext } from '../contexts/index.js';
+import { authContext, apiContext, rollbarContext } from '../contexts/index.js';
 
 export const useAuth = () => useContext(authContext);
-export const useSocket = () => useContext(socketContext);
+export const useApiService = () => useContext(apiContext);
 export const useRollbar = () => useContext(rollbarContext);

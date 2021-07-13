@@ -7,9 +7,8 @@ import _ from 'lodash';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-// import { useSocket } from '../../hooks/index.js';
 
-import { getMessagesCount, getMessagesByCurrentChannelId, useSocket } from '../index.js';
+import { getMessagesCount, getMessagesByCurrentChannelId, useApiService } from '../index.js';
 import { getCurrentChannelId, getCurrentChannelName } from '../../channel/index.js';
 
 const mapStateToProps = (state) => {
@@ -25,7 +24,7 @@ const mapStateToProps = (state) => {
 const Chat = ({
   messages, messagesCount, currentChannelId, currentChannelName,
 }) => {
-  const { addMessage } = useSocket();
+  const { addMessage } = useApiService();
   const inputRef = useRef();
   const { t } = useTranslation();
 

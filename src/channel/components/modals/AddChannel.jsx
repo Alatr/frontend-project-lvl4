@@ -6,11 +6,11 @@ import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
 import { changeCurrentChannelId, getChannelsNames } from '../../index.js';
-import { useSocket } from '../../../hooks/index.js';
+import { useApiService } from '../../../hooks/index.js';
 
 const AddCannel = ({ onHide, modalInfo: { type } }) => {
   const { t } = useTranslation();
-  const { addChannel } = useSocket();
+  const { addChannel } = useApiService();
   const inputRef = useRef();
   const dispatch = useDispatch();
 

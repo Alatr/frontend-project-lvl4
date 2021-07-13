@@ -5,13 +5,13 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import { useSocket } from '../../../hooks/index.js';
+import { useApiService } from '../../../hooks/index.js';
 
 import { getChannelsNames, getChannelsById } from '../../index.js';
 
 const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
   const { t } = useTranslation();
-  const { renameChannel } = useSocket();
+  const { renameChannel } = useApiService();
   const inputRef = useRef();
   const channelNames = useSelector(getChannelsNames);
   const channelsById = useSelector(getChannelsById);
