@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "0.0.1",
   "description": "this project presents a simplified analogue version of slask chat",
-  "main": "src/init.jsx",
+  "main": "src/init.js",
   "type": "module",
   "engines": {
     "node": "14.x"
@@ -36,6 +36,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^5.0.2",
     "core-js": "^3.12.1",
+    "dotenv": "^10.0.0",
     "fastify": "^3.15.1",
     "fastify-formbody": "^5.0.0",
     "fastify-jwt": "^2.4.0",

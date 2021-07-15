@@ -5,13 +5,11 @@ import _ from 'lodash';
 import initFetch from '../actions/init-fetch.js';
 import { removeChannel, getCurrentChannelId } from '../channel/index.js';
 
-// slice
 const messagesSlice = createSlice({
   name: 'messages',
   initialState: {
     byId: {},
     allIds: [],
-    loading: 'idle',
     ui: {},
   },
   reducers: {
@@ -51,7 +49,6 @@ export const {
   reducer,
 } = messagesSlice;
 
-// selectors
 const getMessagesState = (state) => state?.messages;
 
 export const getMessagesById = createSelector(getMessagesState, (state) => state?.byId);

@@ -29,9 +29,6 @@ const Chat = ({
   const { t } = useTranslation();
 
   const user = JSON.parse(localStorage.getItem('userId'))?.username;
-  useEffect(() => {
-    inputRef.current.focus();
-  }, []);
 
   useEffect(() => {
     inputRef.current.focus();

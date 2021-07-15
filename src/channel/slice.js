@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import initFetch from '../actions/init-fetch.js';
 
-// slice
+/* eslint-disable no-param-reassign */
 const channelsSlice = createSlice({
   name: 'channels',
   initialState: {
@@ -13,7 +13,6 @@ const channelsSlice = createSlice({
     ui: {},
   },
   reducers: {
-    /* eslint-disable no-param-reassign */
     changeCurrentChannelId(state, { payload: { id } }) {
       state.ui.currentChannelId = id;
     },
@@ -37,10 +36,8 @@ const channelsSlice = createSlice({
     renameChannel(state, { payload: { id, name } }) {
       state.byId[id].name = name;
     },
-    /* eslint-enable no-param-reassign */
   },
   extraReducers: {
-    /* eslint-disable no-param-reassign */
     [initFetch.fulfilled]: (state, { payload: { channels, currentChannelId } }) => ({
       byId: _.keyBy(channels, 'id'),
       allIds: channels.map((channel) => channel.id),
@@ -52,9 +49,9 @@ const channelsSlice = createSlice({
       state.loading = 'rejected';
       console.error(action);
     },
-    /* eslint-enable no-param-reassign */
   },
 });
+/* eslint-enable no-param-reassign */
 
 export const {
   actions: {
@@ -63,7 +60,6 @@ export const {
   reducer,
 } = channelsSlice;
 
-// selector
 const getChannelsState = (state) => state?.channels;
 
 export const getCurrentChannelId = createSelector(

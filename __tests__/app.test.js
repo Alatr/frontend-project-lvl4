@@ -148,7 +148,7 @@ const loginUser = async () => {
   await screen.findByTestId('new-message');
 };
 
-describe('chatting', () => {
+describe('messaging', () => {
   beforeEach(loginUser);
 
   test('handle messaging', async () => {
@@ -167,6 +167,11 @@ describe('chatting', () => {
     userEvent.click(await screen.findByRole('button', { name: /Отправить/i }));
     expect(await screen.findByText(/hi, mentor from random chat/i)).toBeInTheDocument();
   });
+});
+
+describe('chatting', () => {
+  beforeEach(loginUser);
+
   test('add chat', async () => {
     userEvent.click(await screen.findByRole('button', { name: /\+/i }));
     expect(await screen.findByText(/Добавить канал/i)).toBeInTheDocument();
@@ -198,7 +203,7 @@ describe('chatting', () => {
   });
 });
 
-describe('chatting validation', () => {
+describe('channels validation', () => {
   beforeEach(loginUser);
 
   test('add channel', async () => {

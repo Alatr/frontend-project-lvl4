@@ -6,9 +6,9 @@ import { useLocation, useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import imgSignup from '../../assets/static/images/signup.jpg';
-import { useAuth, useLogger } from '../hooks/index.js';
-import api from '../routes-api.js';
+import imgSignup from '../../../assets/static/images/signup.jpg';
+import { useAuth, useLogger } from '../../hooks/index.js';
+import api from '../../routes-api.js';
 
 const Signup = () => {
   const auth = useAuth();

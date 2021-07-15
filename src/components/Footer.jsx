@@ -10,7 +10,7 @@ const Footer = () => {
 
   const { t } = useTranslation();
   return (
-    pathname !== routes.signupPage.path
+    pathname === routes.loginPage.path
     && !auth.loggedIn && (
       <div className="card-footer p-4">
         <div className="text-center">

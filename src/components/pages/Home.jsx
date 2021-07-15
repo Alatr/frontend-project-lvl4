@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Spinner } from 'react-bootstrap';
-import { useAuth } from '../hooks/index.js';
-import initFetch from '../actions/init-fetch.js';
+import { useAuth } from '../../hooks/index.js';
+import initFetch from '../../actions/init-fetch.js';
 
-import { Chat } from '../chat/index.js';
-import { Channels } from '../channel/index.js';
+import { Chat } from '../../chat/index.js';
+import { Channels } from '../../channel/index.js';
 
 const actionsCreators = {
   initFetch,
@@ -23,13 +23,15 @@ const Home = ({ loadingChannelsStatus, initFetch: initFetchAction }) => {
   useEffect(() => {
     initFetchAction();
   }, []);
+  useEffect(() => {
+    if (loadingChannelsStatus === 'rejected') {
+      auth.logOut();
+    }
+    if (loadingChannelsStatus === 'fulfilled') {
+      auth.logIn();
+    }
+  }, [loadingChannelsStatus]);
 
-  if (loadingChannelsStatus === 'rejected') {
-    auth.logOut();
-  }
-  if (loadingChannelsStatus === 'fulfilled') {
-    auth.logIn();
-  }
   if (loadingChannelsStatus === 'idle') {
     return (
       <div className="container flex-grow-1 my-4 overflow-hidden rounded shadow">
