@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/index.js';
+import { useAuth } from '../services/auth-service.jsx';
 import routes from '../routes-config.js';
 
 const Footer = () => {

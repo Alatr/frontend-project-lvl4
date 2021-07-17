@@ -1,28 +1,24 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Spinner } from 'react-bootstrap';
-import { useAuth } from '../../hooks/index.js';
+import { useAuth } from '../../services/auth-service.jsx';
 import initFetch from '../../actions/init-fetch.js';
 
 import { Chat } from '../../chat/index.js';
-import { Channels } from '../../channel/index.js';
+import { Channels, getLoadingChannelsStatus } from '../../channel/index.js';
 
 const actionsCreators = {
   initFetch,
 };
 
-const mapStateToProps = ({ channels }) => {
-  const props = {
-    loadingChannelsStatus: channels.loading,
-  };
-  return props;
-};
-
-const Home = ({ loadingChannelsStatus, initFetch: initFetchAction }) => {
+const Home = ({ initFetch: initFetchAction }) => {
   const auth = useAuth();
+  const loadingChannelsStatus = useSelector(getLoadingChannelsStatus);
+
   useEffect(() => {
     initFetchAction();
   }, []);
+
   useEffect(() => {
     if (loadingChannelsStatus === 'rejected') {
       auth.logOut();
@@ -58,4 +54,4 @@ const Home = ({ loadingChannelsStatus, initFetch: initFetchAction }) => {
   );
 };
 
-export default connect(mapStateToProps, actionsCreators)(Home);
+export default connect(null, actionsCreators)(Home);

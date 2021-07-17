@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import { Button, Form } from 'react-bootstrap';
 
@@ -7,26 +7,19 @@ import _ from 'lodash';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-
-import { getMessagesCount, getMessagesByCurrentChannelId, useApiService } from '../index.js';
+import { useApiService, useLogger } from '../index.js';
+import { getMessagesCount, getMessagesByCurrentChannelId } from '../slice.js';
 import { getCurrentChannelId, getCurrentChannelName } from '../../channel/index.js';
 
-const mapStateToProps = (state) => {
-  const props = {
-    messages: getMessagesByCurrentChannelId(state),
-    messagesCount: getMessagesCount(state),
-    currentChannelId: getCurrentChannelId(state),
-    currentChannelName: getCurrentChannelName(state),
-  };
-  return props;
-};
-
-const Chat = ({
-  messages, messagesCount, currentChannelId, currentChannelName,
-}) => {
+const Chat = () => {
   const { addMessage } = useApiService();
+  const logger = useLogger();
   const inputRef = useRef();
   const { t } = useTranslation();
+  const messages = useSelector(getMessagesByCurrentChannelId);
+  const messagesCount = useSelector(getMessagesCount);
+  const currentChannelId = useSelector(getCurrentChannelId);
+  const currentChannelName = useSelector(getCurrentChannelName);
 
   const user = JSON.parse(localStorage.getItem('userId'))?.username;
 
@@ -61,17 +54,16 @@ const Chat = ({
             body: yup.string().required(),
           })}
           onSubmit={(values, { resetForm }) => {
-            addMessage(
-              {
-                body: values.body,
-                channelId: currentChannelId,
-                username: user,
-              },
-              () => {
+            addMessage({
+              body: values.body,
+              channelId: currentChannelId,
+              username: user,
+            })
+              .then(() => {
                 resetForm();
                 inputRef.current.select();
-              },
-            );
+              })
+              .catch(logger.logError);
           }}
         >
           {({
@@ -121,4 +113,4 @@ const Chat = ({
   );
 };
 
-export default connect(mapStateToProps, null)(Chat);
+export default Chat;

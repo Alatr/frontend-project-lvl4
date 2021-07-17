@@ -1,19 +1,11 @@
 import React, { useState } from 'react';
 import { Dropdown, Button, ButtonGroup } from 'react-bootstrap';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { changeCurrentChannelId, getChannels, getCurrentChannelId } from '../index.js';
 
 import getModal from './modals/index.js';
-
-const mapStateToProps = (state) => {
-  const props = {
-    channels: getChannels(state),
-    currentChannelId: getCurrentChannelId(state),
-  };
-  return props;
-};
 
 const actionsCreators = {
   changeCurrentChannelIdAction: changeCurrentChannelId,
@@ -81,8 +73,11 @@ const ChannelItem = ({
   );
 };
 
-const Channels = ({ channels, currentChannelId, changeCurrentChannelIdAction }) => {
+const Channels = ({ changeCurrentChannelIdAction }) => {
   const { t } = useTranslation();
+  const channels = useSelector(getChannels);
+  const currentChannelId = useSelector(getCurrentChannelId);
+
   const [modalInfo, setModalInfo] = useState({ type: null, channelId: null });
   const hideModal = () => setModalInfo({ type: null, channelId: null });
   const showModal = (type, channelId = null) => setModalInfo({ type, channelId });
@@ -132,4 +127,4 @@ const Channels = ({ channels, currentChannelId, changeCurrentChannelIdAction }) 
   );
 };
 
-export default connect(mapStateToProps, actionsCreators)(Channels);
+export default connect(null, actionsCreators)(Channels);

@@ -2,20 +2,25 @@ import React from 'react';
 
 import Rollbar from 'rollbar';
 import i18n from 'i18next';
-import { initReactI18next, I18nextProvider } from 'react-i18next';
+import { I18nextProvider } from 'react-i18next';
 
 import { Provider } from 'react-redux';
 import { setLocale } from 'yup';
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import ruTranslation from './locales/ru/translation.js';
 
-import { reducer as messagesReducer } from './chat/index.js';
-import { reducer as channelsReducer } from './channel/index.js';
+import { reducer as messagesReducer, addMessage as addMessageAction } from './chat/index.js';
+import {
+  reducer as channelsReducer,
+  addChannel as addChannelAction,
+  removeChannel as removeChannelAction,
+  renameChannel as renameChannelAction,
+} from './channel/index.js';
 
 import { ApiService, LoggerService, AuthService } from './services/index.js';
 import App from './components/App.jsx';
 
-export default (socket) => {
+export default async (api) => {
   const store = configureStore({
     reducer: combineReducers({
       channels: channelsReducer,
@@ -27,36 +32,46 @@ export default (socket) => {
       translation: ruTranslation,
     },
   };
-  i18n.use(initReactI18next).init({
+  const i18nextInstance = i18n.createInstance();
+  await i18nextInstance.init({
     resources,
     fallbackLng: 'ru',
     lng: 'ru',
-    react: {
-      useSuspense: false,
-    },
   });
 
   setLocale({
     mixed: {
-      required: i18n.t('errors.required'),
-      notOneOf: i18n.t('errors.notOneOf'),
+      required: i18nextInstance.t('errors.required'),
+      notOneOf: i18nextInstance.t('errors.notOneOf'),
     },
     string: {
-      min: i18n.t('errors.min'),
-      max: i18n.t('errors.max'),
+      min: i18nextInstance.t('errors.min'),
+      max: i18nextInstance.t('errors.max'),
     },
   });
-  const rollbar = new Rollbar({
-    accessToken: '6dc24059411e474ca1a47c1cfe38e953',
-    environment: 'development',
+  const logger = new Rollbar({
+    accessToken: process.env.ROLLBAR_TOKEN,
+    enabled: process.env.NODE_ENV === 'production',
+  });
+  api.on('newChannel', (data) => {
+    store.dispatch(addChannelAction(data));
+  });
+  api.on('removeChannel', ({ id }) => {
+    store.dispatch(removeChannelAction({ channelId: id }));
+  });
+  api.on('renameChannel', (data) => {
+    store.dispatch(renameChannelAction(data));
+  });
+  api.on('newMessage', (data) => {
+    store.dispatch(addMessageAction(data));
   });
 
   return (
-    <LoggerService rollbar={rollbar}>
+    <LoggerService logger={logger}>
       <Provider store={store}>
-        <ApiService socket={socket}>
+        <ApiService api={api}>
           <AuthService>
-            <I18nextProvider i18n={i18n}>
+            <I18nextProvider i18n={i18nextInstance}>
               <App />
             </I18nextProvider>
           </AuthService>
@@ -65,6 +80,3 @@ export default (socket) => {
     </LoggerService>
   );
 };
-/* eslint-disable react/display-name */
-//  socket => <App socket={socket} />;
-// export default init;

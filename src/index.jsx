@@ -4,6 +4,10 @@ import 'regenerator-runtime/runtime.js';
 import { render } from 'react-dom';
 import { io } from 'socket.io-client';
 
-import run from './init.jsx';
+import init from './init.jsx';
 
-render(run(io()), document.getElementById('chat'));
+const run = async () => {
+  render(await init(io()), document.getElementById('chat'));
+};
+
+run();

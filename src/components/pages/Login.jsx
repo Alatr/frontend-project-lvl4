@@ -7,7 +7,7 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import imgLogin from '../../../assets/static/images/login.jpg';
-import { useAuth, useLogger } from '../../hooks/index.js';
+import { useAuth, useLogger } from '../../services/index.js';
 import api from '../../routes-api.js';
 
 const Login = () => {

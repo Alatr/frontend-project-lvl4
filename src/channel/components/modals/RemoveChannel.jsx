@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 import { useTranslation } from 'react-i18next';
-import { useApiService } from '../../index.js';
+import { useApiService, useLogger } from '../../index.js';
 
 const RemoveChannel = ({ onHide, modalInfo: { type, channelId: id } }) => {
   const { t } = useTranslation();
+  const logger = useLogger();
   const { removeChannel } = useApiService();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -32,10 +33,12 @@ const RemoveChannel = ({ onHide, modalInfo: { type, channelId: id } }) => {
             variant="danger"
             onClick={() => {
               setIsSubmitting(true);
-              removeChannel({ id }, () => {
-                setIsSubmitting(true);
-                onHide();
-              });
+              removeChannel({ id })
+                .then(() => {
+                  setIsSubmitting(true);
+                  onHide();
+                })
+                .catch(logger.logError);
             }}
           >
             {t('modal.deleteBtn')}

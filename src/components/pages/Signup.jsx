@@ -1,13 +1,13 @@
 import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 import { Formik } from 'formik';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Card } from 'react-bootstrap';
 import { useLocation, useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
 import imgSignup from '../../../assets/static/images/signup.jpg';
-import { useAuth, useLogger } from '../../hooks/index.js';
+import { useAuth, useLogger } from '../../services/index.js';
 import api from '../../routes-api.js';
 
 const Signup = () => {
@@ -27,8 +27,8 @@ const Signup = () => {
     <div className="container-fluid flex-grow-1">
       <div className="row justify-content-center align-content-center h-100">
         <div className="col-xl-8 col-xxl-6">
-          <div className="card shadow-sm">
-            <div className="card-body d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
+          <Card>
+            <Card.Body className="d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
               <div>
                 <img src={imgSignup} className="rounded-circle" alt="Войти" />
               </div>
@@ -69,7 +69,7 @@ const Signup = () => {
                   handleSubmit, handleChange, values, isSubmitting, errors, isValid, dirty,
                 }) => (
                   <Form onSubmit={handleSubmit} className="w-50">
-                    <h1 className="text-center mb-4">{t('signup.title')}</h1>
+                    <Card.Title className="text-center mb-4">{t('signup.title')}</Card.Title>
                     <div>
                       <Form.Group className="form-floating mb-3">
                         <Form.Control
@@ -147,8 +147,8 @@ const Signup = () => {
                   </Form>
                 )}
               </Formik>
-            </div>
-          </div>
+            </Card.Body>
+          </Card>
         </div>
       </div>
     </div>

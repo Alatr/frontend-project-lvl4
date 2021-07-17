@@ -1,5 +1,9 @@
-import React, { useState, useCallback } from 'react';
-import { authContext } from '../contexts/index.js';
+import React, {
+  useContext, useState, useCallback, createContext,
+} from 'react';
+
+const authContext = createContext({});
+export const useAuth = () => useContext(authContext);
 
 const AuthService = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(Boolean(JSON.parse(localStorage.getItem('userId'))));

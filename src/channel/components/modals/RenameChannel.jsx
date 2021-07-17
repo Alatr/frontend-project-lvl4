@@ -6,10 +6,13 @@ import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
 
-import { getChannelsNames, getChannelsById, useApiService } from '../../index.js';
+import {
+  getChannelsNames, getChannelsById, useApiService, useLogger,
+} from '../../index.js';
 
 const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
   const { t } = useTranslation();
+  const logger = useLogger();
   const { renameChannel } = useApiService();
   const inputRef = useRef();
   const channelNames = useSelector(getChannelsNames);
@@ -38,10 +41,12 @@ const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
               .notOneOf(channelNames),
           })}
           onSubmit={(values, { resetForm }) => {
-            renameChannel({ name: values.newChannelName, id: channelId }, () => {
-              resetForm();
-              onHide();
-            });
+            renameChannel({ name: values.newChannelName, id: channelId })
+              .then(() => {
+                resetForm();
+                onHide();
+              })
+              .catch(logger.logError);
           }}
           validateOnChange={false}
           initialValues={{

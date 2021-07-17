@@ -1,52 +1,46 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { apiContext } from '../contexts/index.js';
+import React, { useContext, useCallback, createContext } from 'react';
 
-import { addMessage as addMessageAction } from '../chat/index.js';
-import {
-  addChannel as addChannelAction,
-  removeChannel as removeChannelAction,
-  renameChannel as renameChannelAction,
-} from '../channel/index.js';
+const apiContext = createContext({});
+const { Provider } = apiContext;
 
-const ApiService = ({ children, socket }) => {
-  const [socketConnected, setSocketConnected] = useState(false);
-  const dispatch = useDispatch();
+export const useApiService = () => useContext(apiContext);
 
-  useEffect(() => {
-    socket.on('newChannel', (data) => {
-      dispatch(addChannelAction(data));
-    });
-    socket.on('removeChannel', ({ id }) => {
-      dispatch(removeChannelAction({ channelId: id }));
-    });
-    socket.on('renameChannel', (data) => {
-      dispatch(renameChannelAction(data));
-    });
-    socket.on('newMessage', (data) => {
-      dispatch(addMessageAction(data));
-    });
-    setSocketConnected(true);
-  }, []);
+const withAcknowledgement = (socketFunc) => (...args) => new Promise((resolve, reject) => {
+  // eslint-disable-next-line functional/no-let
+  let state = 'pending';
+  const timer = setTimeout(() => {
+    state = 'rejected';
+    reject();
+  }, 3000);
+  socketFunc(...args, (response) => {
+    if (state !== 'pending') return;
+    clearTimeout(timer);
+    if (response.status === 'ok') {
+      state = 'resolved';
+      resolve(response.data);
+    }
+    reject(new Error('Socket response error'));
+  });
+});
 
-  const addChannel = useCallback((data, cb) => {
-    socket.volatile.emit('newChannel', data, cb);
-  });
-  const removeChannel = useCallback((data, cb) => {
-    socket.volatile.emit('removeChannel', data, cb);
-  });
-  const renameChannel = useCallback((data, cb) => {
-    socket.volatile.emit('renameChannel', data, cb);
-  });
-  const addMessage = useCallback((data, cb) => {
-    socket.volatile.emit('newMessage', data, cb);
-  });
+const ApiService = ({ children, api }) => {
+  const addChannel = useCallback(
+    withAcknowledgement((...args) => api.volatile.emit('newChannel', ...args)),
+  );
+  const removeChannel = useCallback(
+    withAcknowledgement((...args) => api.volatile.emit('removeChannel', ...args)),
+  );
+  const renameChannel = useCallback(
+    withAcknowledgement((...args) => api.volatile.emit('renameChannel', ...args)),
+  );
+  const addMessage = useCallback(
+    withAcknowledgement((...args) => api.volatile.emit('newMessage', ...args)),
+  );
 
   return (
-    <apiContext.Provider
+    <Provider
       value={{
-        socket,
-        socketConnected,
+        api,
         addChannel,
         removeChannel,
         renameChannel,
@@ -54,7 +48,7 @@ const ApiService = ({ children, socket }) => {
       }}
     >
       {children}
-    </apiContext.Provider>
+    </Provider>
   );
 };
 

@@ -5,10 +5,13 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import { changeCurrentChannelId, getChannelsNames, useApiService } from '../../index.js';
+import {
+  changeCurrentChannelId, getChannelsNames, useApiService, useLogger,
+} from '../../index.js';
 
 const AddCannel = ({ onHide, modalInfo: { type } }) => {
   const { t } = useTranslation();
+  const logger = useLogger();
   const { addChannel } = useApiService();
   const inputRef = useRef();
   const dispatch = useDispatch();
@@ -41,11 +44,13 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
               .notOneOf(channelNames),
           })}
           onSubmit={(values, { resetForm }) => {
-            addChannel({ name: values.newChannelName, removable: true }, ({ data: { id } }) => {
-              dispatch(changeCurrentChannelId({ id }));
-              resetForm();
-              onHide();
-            });
+            addChannel({ name: values.newChannelName, removable: true })
+              .then(({ id }) => {
+                dispatch(changeCurrentChannelId({ id }));
+                resetForm();
+                onHide();
+              })
+              .catch(logger.logError);
           }}
           validateOnChange={false}
           initialValues={{

@@ -46,16 +46,17 @@ const setUpStaticAssets = (app) => {
 };
 
 const setUpAuth = (app) => {
-  // TODO add socket auth
-  app.register(fastifyJWT, {
-    secret: 'supersecret',
-  }).decorate('authenticate', async (req, reply) => {
-    try {
-      await req.jwtVerify();
-    } catch (_err) {
-      reply.send(new Unauthorized());
-    }
-  });
+  app
+    .register(fastifyJWT, {
+      secret: 'supersecret',
+    })
+    .decorate('authenticate', async (req, reply) => {
+      try {
+        await req.jwtVerify();
+      } catch (_err) {
+        reply.send(new Unauthorized());
+      }
+    });
 };
 
 export default async (options) => {

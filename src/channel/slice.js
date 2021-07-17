@@ -10,11 +10,10 @@ const channelsSlice = createSlice({
     byId: {},
     allIds: [],
     loading: 'idle',
-    ui: {},
   },
   reducers: {
     changeCurrentChannelId(state, { payload: { id } }) {
-      state.ui.currentChannelId = id;
+      state.currentChannelId = id;
     },
     addChannel(state, { payload }) {
       state.byId[payload.id] = payload;
@@ -25,12 +24,10 @@ const channelsSlice = createSlice({
         ...state,
         byId: _.omit(state.byId, channelId),
         allIds: state.allIds.filter((id) => id !== channelId),
-        ui: {
-          currentChannelId:
-            state.ui.currentChannelId === channelId
-              ? state.defaultCurrentChannelId
-              : state.ui.currentChannelId,
-        },
+        currentChannelId:
+          state.currentChannelId === channelId
+            ? state.defaultCurrentChannelId
+            : state.currentChannelId,
       };
     },
     renameChannel(state, { payload: { id, name } }) {
@@ -42,7 +39,7 @@ const channelsSlice = createSlice({
       byId: _.keyBy(channels, 'id'),
       allIds: channels.map((channel) => channel.id),
       loading: 'fulfilled',
-      ui: { currentChannelId },
+      currentChannelId,
       defaultCurrentChannelId: currentChannelId,
     }),
     [initFetch.rejected]: (state, action) => {
@@ -64,10 +61,12 @@ const getChannelsState = (state) => state?.channels;
 
 export const getCurrentChannelId = createSelector(
   getChannelsState,
-  (state) => state?.ui?.currentChannelId,
+  (state) => state?.currentChannelId,
 );
 export const getChannelsById = createSelector(getChannelsState, (state) => state?.byId);
 export const getChannelsAllIds = createSelector(getChannelsState, (state) => state?.allIds);
+
+export const getLoadingChannelsStatus = createSelector(getChannelsState, (state) => state?.loading);
 
 export const getChannels = createSelector(
   getChannelsById,

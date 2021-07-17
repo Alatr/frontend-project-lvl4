@@ -1,11 +1,15 @@
-import React from 'react';
-import { loggerContext } from '../contexts/index.js';
+import React, { useContext, createContext } from 'react';
 
-const LoggerService = ({ children, rollbar }) => {
+const loggerContext = createContext({});
+export const useLogger = () => useContext(loggerContext);
+
+const LoggerService = ({ children, logger }) => {
   const logError = (error) => {
-    rollbar.error(error);
+    logger.error(error);
+    console.error(error);
   };
-  return <loggerContext.Provider value={{ rollbar, logError }}>{children}</loggerContext.Provider>;
+
+  return <loggerContext.Provider value={{ logger, logError }}>{children}</loggerContext.Provider>;
 };
 
 export default LoggerService;
