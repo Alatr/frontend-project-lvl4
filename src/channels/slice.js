@@ -20,15 +20,11 @@ const channelsSlice = createSlice({
       state.allIds.push(payload.id);
     },
     removeChannel(state, { payload: { channelId } }) {
-      return {
-        ...state,
-        byId: _.omit(state.byId, channelId),
-        allIds: state.allIds.filter((id) => id !== channelId),
-        currentChannelId:
-          state.currentChannelId === channelId
-            ? state.defaultCurrentChannelId
-            : state.currentChannelId,
-      };
+      state.byId = _.omit(state.byId, channelId);
+      state.allIds = state.allIds.filter((id) => id !== channelId);
+      state.currentChannelId = state.currentChannelId === channelId
+        ? state.defaultCurrentChannelId
+        : state.currentChannelId;
     },
     renameChannel(state, { payload: { id, name } }) {
       state.byId[id].name = name;
@@ -42,15 +38,15 @@ const channelsSlice = createSlice({
       currentChannelId,
       defaultCurrentChannelId: currentChannelId,
     }),
-    [initFetch.rejected]: (state, action) => {
+    [initFetch.rejected]: (state) => {
       state.loading = 'rejected';
-      console.error(action);
     },
   },
 });
 /* eslint-enable no-param-reassign */
 
 export const {
+  // todo just actions export
   actions: {
     changeCurrentChannelId, addChannel, removeChannel, renameChannel,
   },

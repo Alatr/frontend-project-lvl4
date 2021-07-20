@@ -1,5 +1,4 @@
-export * from '../services/api-service.jsx';
-export * from '../services/logger-service.jsx';
+export { useApiService, useLogger } from '../services/index.js';
 
 export * from './slice.js';
 

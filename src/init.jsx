@@ -15,10 +15,10 @@ import {
   addChannel as addChannelAction,
   removeChannel as removeChannelAction,
   renameChannel as renameChannelAction,
-} from './channel/index.js';
+} from './channels/index.js';
 
 import { ApiService, LoggerService, AuthService } from './services/index.js';
-import App from './components/App.jsx';
+import App from './App.jsx';
 
 export default async (api) => {
   const store = configureStore({
@@ -27,14 +27,14 @@ export default async (api) => {
       messages: messagesReducer,
     }),
   });
-  const resources = {
-    ru: {
-      translation: ruTranslation,
-    },
-  };
+
   const i18nextInstance = i18n.createInstance();
   await i18nextInstance.init({
-    resources,
+    resources: {
+      ru: {
+        translation: ruTranslation,
+      },
+    },
     fallbackLng: 'ru',
     lng: 'ru',
   });

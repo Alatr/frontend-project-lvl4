@@ -6,21 +6,19 @@ import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
 
-import {
-  getChannelsNames, getChannelsById, useApiService, useLogger,
-} from '../../index.js';
+import { getChannelsNames, getChannelsById } from '../../slice.js';
+import { useApiService, useLogger } from '../../../services/index.js';
 
 const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
   const { t } = useTranslation();
   const logger = useLogger();
   const { renameChannel } = useApiService();
-  const inputRef = useRef();
+  const renameModalInput = useRef();
   const channelNames = useSelector(getChannelsNames);
   const channelsById = useSelector(getChannelsById);
 
   useEffect(() => {
-    inputRef.current.focus();
-    inputRef.current.select();
+    renameModalInput.current.select();
   }, []);
 
   return (
@@ -40,13 +38,14 @@ const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
             newChannelName: yup.string().required().min(3).max(20)
               .notOneOf(channelNames),
           })}
-          onSubmit={(values, { resetForm }) => {
-            renameChannel({ name: values.newChannelName, id: channelId })
-              .then(() => {
-                resetForm();
-                onHide();
-              })
-              .catch(logger.logError);
+          onSubmit={async (values, { resetForm }) => {
+            try {
+              await renameChannel({ name: values.newChannelName, id: channelId });
+              resetForm();
+              onHide();
+            } catch (error) {
+              logger.error(error);
+            }
           }}
           validateOnChange={false}
           initialValues={{
@@ -64,7 +63,7 @@ const RenameChannel = ({ onHide, modalInfo: { type, channelId } }) => {
                 value={values.newChannelName}
                 onChange={handleChange}
                 isInvalid={!!errors.newChannelName}
-                ref={inputRef}
+                ref={renameModalInput}
                 disabled={isSubmitting}
                 data-testid="rename-channel"
               />

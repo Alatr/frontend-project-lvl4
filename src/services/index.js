@@ -1,4 +1,3 @@
-/* eslint-disable-next-line import/no-cycle */
 export * from './api-service.jsx';
 export * from './logger-service.jsx';
 export * from './auth-service.jsx';

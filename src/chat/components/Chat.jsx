@@ -7,24 +7,25 @@ import _ from 'lodash';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import { useApiService, useLogger } from '../index.js';
+import { useApiService, useLogger, useAuth } from '../../services/index.js';
 import { getMessagesCount, getMessagesByCurrentChannelId } from '../slice.js';
-import { getCurrentChannelId, getCurrentChannelName } from '../../channel/index.js';
+import { getCurrentChannelId, getCurrentChannelName } from '../../channels/index.js';
 
 const Chat = () => {
   const { addMessage } = useApiService();
   const logger = useLogger();
-  const inputRef = useRef();
+  const auth = useAuth();
+  const addMessageInput = useRef();
   const { t } = useTranslation();
   const messages = useSelector(getMessagesByCurrentChannelId);
   const messagesCount = useSelector(getMessagesCount);
   const currentChannelId = useSelector(getCurrentChannelId);
   const currentChannelName = useSelector(getCurrentChannelName);
 
-  const user = JSON.parse(localStorage.getItem('userId'))?.username;
+  const user = auth.getUserName();
 
   useEffect(() => {
-    inputRef.current.focus();
+    addMessageInput.current.focus();
   }, [currentChannelName]);
 
   return (
@@ -53,17 +54,18 @@ const Chat = () => {
           validationSchema={yup.object({
             body: yup.string().required(),
           })}
-          onSubmit={(values, { resetForm }) => {
-            addMessage({
-              body: values.body,
-              channelId: currentChannelId,
-              username: user,
-            })
-              .then(() => {
-                resetForm();
-                inputRef.current.select();
-              })
-              .catch(logger.logError);
+          onSubmit={async (values, { resetForm }) => {
+            try {
+              await addMessage({
+                body: values.body,
+                channelId: currentChannelId,
+                username: user,
+              });
+              resetForm();
+              addMessageInput.current.select();
+            } catch (error) {
+              logger.error(error);
+            }
           }}
         >
           {({
@@ -78,7 +80,7 @@ const Chat = () => {
                   value={values.body}
                   onChange={handleChange}
                   placeholder={t('chat.chatPlaceholder')}
-                  ref={inputRef}
+                  ref={addMessageInput}
                   disabled={isSubmitting}
                   data-testid="new-message"
                 />

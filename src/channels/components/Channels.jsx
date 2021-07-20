@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 import { Dropdown, Button, ButtonGroup } from 'react-bootstrap';
-import { connect, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-
-import { changeCurrentChannelId, getChannels, getCurrentChannelId } from '../index.js';
+import { changeCurrentChannelId, getChannels, getCurrentChannelId } from '../slice.js';
 
 import getModal from './modals/index.js';
-
-const actionsCreators = {
-  changeCurrentChannelIdAction: changeCurrentChannelId,
-};
 
 const renderModal = ({ modalInfo, hideModal }) => {
   if (modalInfo.type === null) {
@@ -27,7 +22,7 @@ const ChannelItem = ({
   currentChannelId,
   showModal,
   name,
-  changeChannelHandle,
+  handleChannelChange,
 }) => {
   const { t } = useTranslation();
   return (
@@ -37,7 +32,7 @@ const ChannelItem = ({
           <ButtonGroup variant="success" className="w-100">
             <Button
               variant={getSelectedButtonVariant(channelId, currentChannelId)}
-              onClick={changeChannelHandle(channelId)}
+              onClick={handleChannelChange(channelId)}
               className="w-100 px-4 rounded-0 text-start btn"
             >
               <span className="me-1">#</span>
@@ -61,7 +56,7 @@ const ChannelItem = ({
       ) : (
         <Button
           type="button"
-          onClick={changeChannelHandle(channelId)}
+          onClick={handleChannelChange(channelId)}
           variant={getSelectedButtonVariant(channelId, currentChannelId)}
           className="w-100 px-4 rounded-0 text-start btn"
         >
@@ -73,17 +68,17 @@ const ChannelItem = ({
   );
 };
 
-const Channels = ({ changeCurrentChannelIdAction }) => {
+const Channels = () => {
   const { t } = useTranslation();
   const channels = useSelector(getChannels);
+  const dispatch = useDispatch();
   const currentChannelId = useSelector(getCurrentChannelId);
 
   const [modalInfo, setModalInfo] = useState({ type: null, channelId: null });
   const hideModal = () => setModalInfo({ type: null, channelId: null });
   const showModal = (type, channelId = null) => setModalInfo({ type, channelId });
-
-  const changeChannelHandle = (id) => () => {
-    changeCurrentChannelIdAction({ id });
+  const handleChannelChange = (id) => () => {
+    dispatch(changeCurrentChannelId({ id }));
   };
 
   return (
@@ -113,7 +108,7 @@ const Channels = ({ changeCurrentChannelIdAction }) => {
         {channels.map((channelData) => (
           <li className="nav-item" key={channelData.id}>
             <ChannelItem
-              changeChannelHandle={changeChannelHandle}
+              handleChannelChange={handleChannelChange}
               currentChannelId={currentChannelId}
               showModal={showModal}
               /* eslint-disable-next-line react/jsx-props-no-spreading */
@@ -127,4 +122,4 @@ const Channels = ({ changeCurrentChannelIdAction }) => {
   );
 };
 
-export default connect(null, actionsCreators)(Channels);
+export default Channels;

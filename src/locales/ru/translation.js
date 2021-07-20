@@ -55,4 +55,8 @@ export default {
   noMatch: {
     title: 'page not found -  error 404',
   },
+  alts: {
+    login: 'Войти',
+    signup: 'Войти',
+  },
 };

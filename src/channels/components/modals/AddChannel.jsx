@@ -5,21 +5,20 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import { useTranslation } from 'react-i18next';
-import {
-  changeCurrentChannelId, getChannelsNames, useApiService, useLogger,
-} from '../../index.js';
+import { changeCurrentChannelId, getChannelsNames } from '../../slice.js';
+import { useApiService, useLogger } from '../../../services/index.js';
 
 const AddCannel = ({ onHide, modalInfo: { type } }) => {
   const { t } = useTranslation();
   const logger = useLogger();
   const { addChannel } = useApiService();
-  const inputRef = useRef();
+  const addModalInput = useRef();
   const dispatch = useDispatch();
 
   const channelNames = useSelector(getChannelsNames);
 
   useEffect(() => {
-    inputRef.current.focus();
+    addModalInput.current.focus();
   }, []);
 
   return (
@@ -43,14 +42,15 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
               .max(20, t('errors.max'))
               .notOneOf(channelNames),
           })}
-          onSubmit={(values, { resetForm }) => {
-            addChannel({ name: values.newChannelName, removable: true })
-              .then(({ id }) => {
-                dispatch(changeCurrentChannelId({ id }));
-                resetForm();
-                onHide();
-              })
-              .catch(logger.logError);
+          onSubmit={async (values, { resetForm }) => {
+            try {
+              const { id } = await addChannel({ name: values.newChannelName, removable: true });
+              dispatch(changeCurrentChannelId({ id }));
+              resetForm();
+              onHide();
+            } catch (error) {
+              logger.error(error);
+            }
           }}
           validateOnChange={false}
           initialValues={{
@@ -68,7 +68,7 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
                 value={values.newChannelName}
                 onChange={handleChange}
                 isInvalid={!!errors.newChannelName}
-                ref={inputRef}
+                ref={addModalInput}
                 disabled={isSubmitting}
                 data-testid="add-channel"
               />

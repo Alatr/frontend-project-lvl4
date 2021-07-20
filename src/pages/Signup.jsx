@@ -1,18 +1,18 @@
-import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 import { Formik } from 'formik';
-import { Form, Button, Card } from 'react-bootstrap';
+import {
+  Form, Button, Card, Container, Row, Col, FloatingLabel,
+} from 'react-bootstrap';
 import { useLocation, useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import imgSignup from '../../../assets/static/images/signup.jpg';
-import { useAuth, useLogger } from '../../services/index.js';
-import api from '../../routes-api.js';
+import imgSignup from '../../assets/static/images/signup.jpg';
+import { useAuth, useLogger } from '../services/index.js';
 
 const Signup = () => {
   const auth = useAuth();
-  const inputRef = useRef();
+  const signupInput = useRef();
   const history = useHistory();
   const location = useLocation();
   const logger = useLogger();
@@ -20,17 +20,17 @@ const Signup = () => {
 
   const [signupFailed, setSignupFailed] = useState(false);
   useEffect(() => {
-    inputRef.current.focus();
+    signupInput.current.focus();
   }, []);
 
   return (
-    <div className="container-fluid flex-grow-1">
-      <div className="row justify-content-center align-content-center h-100">
-        <div className="col-xl-8 col-xxl-6">
+    <Container fluid className="flex-grow-1">
+      <Row className="justify-content-center align-content-center h-100">
+        <Col xl={8} xxl={6}>
           <Card>
             <Card.Body className="d-flex flex-column flex-md-row justify-content-around align-items-center p-5">
               <div>
-                <img src={imgSignup} className="rounded-circle" alt="Войти" />
+                <img src={imgSignup} className="rounded-circle" alt={t('alts.signup')} />
               </div>
               <Formik
                 validationSchema={yup.object({
@@ -44,18 +44,16 @@ const Signup = () => {
                 })}
                 onSubmit={async (values) => {
                   try {
-                    const { data } = await axios.post(api.signup(), values);
-                    localStorage.setItem('userId', JSON.stringify(data));
-                    auth.logIn();
+                    await auth.signUp(values);
                     const { from } = location.state || { from: { pathname: '/' } };
                     history.replace(from);
                   } catch (error) {
                     if (error.isAxiosError && error.response.status === 409) {
                       setSignupFailed(true);
-                      inputRef.current.select();
+                      signupInput.current.select();
                       return;
                     }
-                    logger.logError(error);
+                    logger.error(error);
                     throw error;
                   }
                 }}
@@ -71,33 +69,36 @@ const Signup = () => {
                   <Form onSubmit={handleSubmit} className="w-50">
                     <Card.Title className="text-center mb-4">{t('signup.title')}</Card.Title>
                     <div>
-                      <Form.Group className="form-floating mb-3">
+                      <FloatingLabel
+                        controlId="username"
+                        label={t('signup.placeholders.name')}
+                        className="mb-3"
+                      >
                         <Form.Control
                           name="username"
                           required
-                          id="floatingUsername"
                           className="form-control"
                           autoComplete="username"
                           onChange={handleChange}
                           value={values.username}
                           isInvalid={!!errors.username || signupFailed}
-                          ref={inputRef}
+                          ref={signupInput}
                           disabled={isSubmitting}
                           placeholder={t('signup.placeholders.name')}
                         />
-                        <Form.Label htmlFor="floatingUsername">
-                          {t('signup.placeholders.name')}
-                        </Form.Label>
                         <Form.Control.Feedback type="invalid">
                           {errors.username}
                         </Form.Control.Feedback>
-                      </Form.Group>
-                      <Form.Group className="form-floating mb-3">
+                      </FloatingLabel>
+                      <FloatingLabel
+                        controlId="password"
+                        label={t('signup.placeholders.password')}
+                        className="mb-3"
+                      >
                         <Form.Control
                           name="password"
                           required
                           type="password"
-                          id="password"
                           className="form-control"
                           autoComplete="current-password"
                           onChange={handleChange}
@@ -106,17 +107,17 @@ const Signup = () => {
                           disabled={isSubmitting}
                           placeholder={t('signup.placeholders.password')}
                         />
-                        <Form.Label htmlFor="password">
-                          {t('signup.placeholders.password')}
-                        </Form.Label>
                         <Form.Control.Feedback type="invalid">
                           {errors.password}
                         </Form.Control.Feedback>
-                      </Form.Group>
-                      <Form.Group className="form-floating mb-3">
+                      </FloatingLabel>
+                      <FloatingLabel
+                        controlId="passwordConfirmation"
+                        label={t('signup.placeholders.repeatPassword')}
+                        className="mb-3"
+                      >
                         <Form.Control
                           name="passwordConfirmation"
-                          id="passwordConfirmation"
                           required
                           type="password"
                           className="form-control"
@@ -127,14 +128,11 @@ const Signup = () => {
                           disabled={isSubmitting}
                           placeholder={t('signup.placeholders.repeatPassword')}
                         />
-                        <Form.Label htmlFor="passwordConfirmation">
-                          {t('signup.placeholders.repeatPassword')}
-                        </Form.Label>
                         <Form.Control.Feedback type="invalid">
                           {signupFailed && t('errors.alreadyExist')}
                           {!!errors.passwordConfirmation && errors.passwordConfirmation}
                         </Form.Control.Feedback>
-                      </Form.Group>
+                      </FloatingLabel>
                     </div>
                     <Button
                       type="submit"
@@ -149,9 +147,9 @@ const Signup = () => {
               </Formik>
             </Card.Body>
           </Card>
-        </div>
-      </div>
-    </div>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

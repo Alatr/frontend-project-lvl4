@@ -1,5 +1,14 @@
 import React, { useContext, useCallback, createContext } from 'react';
 
+const host = '';
+const prefix = 'api/v1';
+
+export const routesApi = {
+  login: () => [host, prefix, 'login'].join('/'),
+  signup: () => [host, prefix, 'signup'].join('/'),
+  usersPath: () => [host, prefix, 'data'].join('/'),
+};
+
 const apiContext = createContext({});
 const { Provider } = apiContext;
 

@@ -1,10 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import routes from '../routes-config.js';
-import Header from './Header.jsx';
-import Footer from './Footer.jsx';
-import PrivateRoute from './PrivateRoute.jsx';
+import routes from './routes-config.js';
+import Header from './components/Header.jsx';
+import PrivateRoute from './components/PrivateRoute.jsx';
 
 const App = () => (
   <Router>
@@ -16,7 +15,6 @@ const App = () => (
         <Route exact path={routes.signupPage.path} component={routes.signupPage.component} />
         <Route exact path={routes.notMatchPage.path} component={routes.notMatchPage.component} />
       </Switch>
-      <Footer />
     </div>
   </Router>
 );

@@ -1,7 +1,7 @@
-import LoginPage from './components/pages/Login.jsx';
-import HomePage from './components/pages/Home.jsx';
-import NoMatchPage from './components/pages/NoMatch.jsx';
-import SignupPage from './components/pages/Signup.jsx';
+import LoginPage from './pages/Login.jsx';
+import HomePage from './pages/Home.jsx';
+import NoMatchPage from './pages/NoMatch.jsx';
+import SignupPage from './pages/Signup.jsx';
 
 export default {
   homePage: {

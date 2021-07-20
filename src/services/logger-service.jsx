@@ -1,15 +1,12 @@
 import React, { useContext, createContext } from 'react';
 
 const loggerContext = createContext({});
+const { Provider } = loggerContext;
+
 export const useLogger = () => useContext(loggerContext);
-
-const LoggerService = ({ children, logger }) => {
-  const logError = (error) => {
-    logger.error(error);
-    console.error(error);
-  };
-
-  return <loggerContext.Provider value={{ logger, logError }}>{children}</loggerContext.Provider>;
-};
+/* eslint-disable-next-line max-len */
+const LoggerService = ({ children, logger }) => (
+  <Provider value={{ logger, error: logger.error }}>{children}</Provider>
+);
 
 export default LoggerService;
