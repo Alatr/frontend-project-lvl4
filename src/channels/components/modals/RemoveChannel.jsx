@@ -12,7 +12,7 @@ const RemoveChannel = ({ onHide, modalInfo: { type, channelId: id } }) => {
 
   return (
     <Modal
-      show={!!type}
+      show={Boolean(type)}
       onHide={onHide}
       size="md"
       aria-labelledby="contained-modal-title-vcenter"

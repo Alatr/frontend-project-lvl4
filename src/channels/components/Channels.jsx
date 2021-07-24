@@ -105,14 +105,15 @@ const Channels = () => {
         </Button>
       </div>
       <ul className="nav flex-column nav-pills nav-fill">
-        {channels.map((channelData) => (
-          <li className="nav-item" key={channelData.id}>
+        {channels.map(({ id, name, removable }) => (
+          <li className="nav-item" key={id}>
             <ChannelItem
               handleChannelChange={handleChannelChange}
               currentChannelId={currentChannelId}
               showModal={showModal}
-              /* eslint-disable-next-line react/jsx-props-no-spreading */
-              {...channelData}
+              id={id}
+              name={name}
+              removable={removable}
             />
           </li>
         ))}

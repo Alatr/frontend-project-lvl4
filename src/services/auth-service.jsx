@@ -1,43 +1,56 @@
 import axios from 'axios';
 import React, { useContext, useState, createContext } from 'react';
 import { routesApi as api } from './api-service.jsx';
+import { useLogger } from './logger-service.jsx';
 
 const authContext = createContext({});
 const { Provider } = authContext;
 
 export const useAuth = () => useContext(authContext);
 
+const USER_ID = 'userId';
+const getUser = () => JSON.parse(localStorage.getItem(USER_ID));
+const setUser = (data) => localStorage.setItem(USER_ID, JSON.stringify(data));
+const removeUser = () => localStorage.removeItem(USER_ID);
+
 const getAuthHeader = () => {
-  const userId = JSON.parse(localStorage.getItem('userId'));
-  return userId && userId.token ? { Authorization: `Bearer ${userId.token}` } : {};
+  const user = getUser();
+  return user && user.token ? { Authorization: `Bearer ${user.token}` } : {};
 };
 
+// TODO error lint
+/* eslint-disable-next-line consistent-return */
 export const loggedFetch = async (path) => {
-  const { data } = await axios.get(path, { headers: getAuthHeader() });
-  return data;
+  try {
+    const { data } = await axios.get(path, { headers: getAuthHeader() });
+    return data;
+  } catch (error) {
+    /* eslint-disable-next-line react-hooks/rules-of-hooks */
+    useLogger().error(error);
+  }
 };
 
 const AuthService = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState(Boolean(JSON.parse(localStorage.getItem('userId'))));
+  const [loggedIn, setLoggedIn] = useState(Boolean(getUser()));
 
   const logIn = async (values) => {
     const { data } = await axios.post(api.login(), values);
-    localStorage.setItem('userId', JSON.stringify(data));
+    setUser(data);
     setLoggedIn(true);
   };
 
   const signUp = async (values) => {
     const { data } = await axios.post(api.signup(), values);
-    localStorage.setItem('userId', JSON.stringify(data));
+    setUser(data);
     setLoggedIn(true);
   };
 
   const logOut = () => {
-    localStorage.removeItem('userId');
+    removeUser();
     setLoggedIn(false);
   };
 
-  const getUserName = () => JSON.parse(localStorage.getItem('userId'))?.username;
+  const getUserName = () => getUser()?.username;
   return (
     <Provider
       value={{

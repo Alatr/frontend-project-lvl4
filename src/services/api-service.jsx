@@ -49,6 +49,7 @@ const ApiService = ({ children, api }) => {
   return (
     <Provider
       value={{
+        // TODO точно нужно раскрывать детали реализации сервиса?
         api,
         addChannel,
         removeChannel,
