@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   Spinner, Container, Row, Col,
 } from 'react-bootstrap';
-import { useAuth } from '../services/auth-service.jsx';
+import { useAuth, useLogger } from '../services/index.js';
 import initFetch from '../actions/init-fetch.js';
 
 import { Chat } from '../chat/index.js';
@@ -11,18 +11,21 @@ import { Channels, getLoadingChannelsStatus } from '../channels/index.js';
 
 const Home = () => {
   const auth = useAuth();
+  const logger = useLogger();
   const dispatch = useDispatch();
   const loadingChannelsStatus = useSelector(getLoadingChannelsStatus);
 
   useEffect(() => {
-    dispatch(initFetch());
+    const initInitialData = async () => {
+      try {
+        await dispatch(initFetch());
+      } catch (error) {
+        auth.logOut();
+        logger.error(error);
+      }
+    };
+    initInitialData();
   }, []);
-
-  useEffect(() => {
-    if (loadingChannelsStatus === 'rejected') {
-      auth.logOut();
-    }
-  }, [loadingChannelsStatus]);
 
   if (loadingChannelsStatus === 'idle') {
     return (

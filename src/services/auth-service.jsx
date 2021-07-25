@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useContext, useState, createContext } from 'react';
 import { routesApi as api } from './api-service.jsx';
-import { useLogger } from './logger-service.jsx';
 
 const authContext = createContext({});
 const { Provider } = authContext;
@@ -18,16 +17,9 @@ const getAuthHeader = () => {
   return user && user.token ? { Authorization: `Bearer ${user.token}` } : {};
 };
 
-// TODO error lint
-/* eslint-disable-next-line consistent-return */
 export const loggedFetch = async (path) => {
-  try {
-    const { data } = await axios.get(path, { headers: getAuthHeader() });
-    return data;
-  } catch (error) {
-    /* eslint-disable-next-line react-hooks/rules-of-hooks */
-    useLogger().error(error);
-  }
+  const { data } = await axios.get(path, { headers: getAuthHeader() });
+  return data;
 };
 
 const AuthService = ({ children }) => {

@@ -46,7 +46,6 @@ const channelsSlice = createSlice({
 /* eslint-enable no-param-reassign */
 
 export const {
-  // TODO just actions export
   actions: {
     changeCurrentChannelId, addChannel, removeChannel, renameChannel,
   },

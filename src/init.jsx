@@ -9,12 +9,12 @@ import { setLocale } from 'yup';
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import ruTranslation from './locales/ru/translation.js';
 
-import { reducer as messagesReducer, addMessage as addMessageAction } from './chat/index.js';
+import { reducer as messagesReducer, addMessage } from './chat/index.js';
 import {
   reducer as channelsReducer,
-  addChannel as addChannelAction,
-  removeChannel as removeChannelAction,
-  renameChannel as renameChannelAction,
+  addChannel,
+  removeChannel,
+  renameChannel,
 } from './channels/index.js';
 
 import { ApiService, LoggerService, AuthService } from './services/index.js';
@@ -54,16 +54,16 @@ export default async (api) => {
     enabled: process.env.NODE_ENV === 'production',
   });
   api.on('newChannel', (data) => {
-    store.dispatch(addChannelAction(data));
+    store.dispatch(addChannel(data));
   });
   api.on('removeChannel', ({ id }) => {
-    store.dispatch(removeChannelAction({ channelId: id }));
+    store.dispatch(removeChannel({ channelId: id }));
   });
   api.on('renameChannel', (data) => {
-    store.dispatch(renameChannelAction(data));
+    store.dispatch(renameChannel(data));
   });
   api.on('newMessage', (data) => {
-    store.dispatch(addMessageAction(data));
+    store.dispatch(addMessage(data));
   });
 
   return (
