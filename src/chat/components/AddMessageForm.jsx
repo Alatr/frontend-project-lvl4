@@ -68,7 +68,7 @@ const AddMessageForm = () => {
                   className="btn btn-group-vertical"
                   disabled={!isValid || !dirty}
                 >
-                  <ArrowRightSquare width={30} height={30} fill="currentColor" />
+                  <ArrowRightSquare size={30} fill="currentColor" />
                   <span className="visually-hidden">{t('chat.sand')}</span>
                 </Button>
               </div>

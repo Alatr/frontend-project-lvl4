@@ -92,7 +92,7 @@ const Channels = () => {
           className="p-0 text-primary btn btn-group-vertical"
           onClick={() => showModal('adding')}
         >
-          <PlusSquare width={20} height={20} />
+          <PlusSquare size={20} />
           <span className="visually-hidden">{t('channel.add')}</span>
         </Button>
       </div>
