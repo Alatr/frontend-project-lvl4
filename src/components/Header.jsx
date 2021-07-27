@@ -12,7 +12,7 @@ const Header = () => {
     <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
       <div className="container">
         <Link className="navbar-brand" to={routes.homePage.path}>
-          Hexlet Chat
+          {t('logo')}
         </Link>
         {auth.loggedIn && (
           <button

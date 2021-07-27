@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,6 @@ const RemoveChannel = ({ onHide, modalInfo: { type, channelId: id } }) => {
   const { t } = useTranslation();
   const logger = useLogger();
   const { removeChannel } = useApiService();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <Modal
@@ -24,18 +23,15 @@ const RemoveChannel = ({ onHide, modalInfo: { type, channelId: id } }) => {
       <Modal.Body>
         <h5>{t('modal.deleteText')}</h5>
         <div className="d-flex justify-content-end">
-          <Button disabled={isSubmitting} onClick={onHide} className="me-2" variant="secondary">
+          <Button onClick={onHide} className="me-2" variant="secondary">
             {t('modal.undoBtn')}
           </Button>
           <Button
             type="submit"
-            disabled={isSubmitting}
             variant="danger"
             onClick={async () => {
-              setIsSubmitting(true);
               try {
                 await removeChannel({ id });
-                setIsSubmitting(true);
                 onHide();
               } catch (error) {
                 logger.error(error);

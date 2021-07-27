@@ -40,6 +40,7 @@ const AddCannel = ({ onHide, modalInfo: { type } }) => {
               .required()
               .min(3, t('errors.min'))
               .max(20, t('errors.max'))
+              .trim()
               .notOneOf(channelNames),
           })}
           onSubmit={async (values, { resetForm }) => {

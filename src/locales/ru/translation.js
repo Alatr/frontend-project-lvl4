@@ -1,4 +1,5 @@
 export default {
+  logo: 'Hexlet Chat',
   errors: {
     required: 'Обязательное поле',
     min: 'От 3 до 20 символов',

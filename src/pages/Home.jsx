@@ -27,7 +27,7 @@ const Home = () => {
     initInitialData();
   }, []);
 
-  if (loadingChannelsStatus === 'idle') {
+  if (loadingChannelsStatus !== 'fulfilled') {
     return (
       <Container className="flex-grow-1 my-4 overflow-hidden rounded shadow">
         <div className="d-flex justify-content-center align-items-center h-100">
